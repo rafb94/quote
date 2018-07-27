@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import classes from './items.css';
-import Aux from '../../hoc/Aux';
+import Aux from '../../hoc/Auxiliar';
 import axios from 'axios';
 
 let currentClass1 = null;
@@ -75,7 +75,7 @@ class item extends Component {
 
     itemUpdateHandler = (event) => {
 
-        axios.put('https://cotizador-92b14.firebaseio.com/currentItem.json', {
+        axios.put('https://cotizador-92b14.firebaseio.com/currentItem/currentItem.json', {
             currentItem: event.target.value
         })
         
@@ -110,15 +110,15 @@ class item extends Component {
         
         
         return(
-            <Aux>
-                <div className={this.props.leStyle}>
+            <div className={this.props.leStyle}>
+                <div >
                     <select  className={classes.select} onChange={this.classUpdateHandler}>{list}</select> 
                 </div>
 
-                <div className={this.props.leStyle}>
+                <div>
                     <select  className={classes.select} onChange={this.itemUpdateHandler}>{itemDetail} </select> 
-                </div>)
-            </Aux> 
+                </div>
+            </div> 
            
         )
         

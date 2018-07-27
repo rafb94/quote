@@ -1,8 +1,10 @@
 .Menu{
     width: 100%;
     height: 5rem;
-    background-color: #FFCB2B;
-    color: white;
+    background-color: white;
+    color: #01015B;
+    border-bottom: 2px solid #016AFB;
+    border-radius: 5%;
     display: flex;
     box-sizing: border-box;
     z-index: 900;
@@ -11,7 +13,7 @@
 .MenuLogo{
     height: 90%;
     padding: 0.5rem;
-    display: inline-block;
+    display: none;
     left: 0;
 }
 
@@ -31,8 +33,23 @@
     margin: 1rem;
 }
 
-.MenuButton{
-    width: 10%;
-    margin: 1rem;
-    font-weight: bold;
-}
+.MenuButton {
+    padding: 10px;
+    height: 50%;
+    font-size: 18px;
+    text-align: center;
+    cursor: pointer;
+    outline: none;
+    color: #01015B;
+    background-color: white;
+    border: 2px solid #016AFB;
+    border-radius: 15px;
+    box-shadow: 0 3px #999;
+  }
+  
+  .MenuButton:hover {background-color: #7BB9DE}
+  
+  .MenuButton:active {
+    box-shadow: 0 3px #666;
+    transform: translateY(1px);
+  }

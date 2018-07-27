@@ -7,9 +7,10 @@
 }
 
 .Element{
-    width: 20rem;
-    height: 20rem; 
+    width: 40%;
+    height: 10rem; 
     border: 10px solid #FDA10E;
-    margin: 1rem;
+    margin: 10px auto;
     text-align: center;
+    display: block;
 }

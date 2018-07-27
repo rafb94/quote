@@ -1,10 +1,19 @@
 .SideDrawer{
     height: 100%;
-    width: 50%;
+    width: 30%;
     background-color: #F2F3F5;
     position: fixed;
     z-index: 1000;
-    
+    overflow-x: hidden;
+    transition: 0.5s;
+    opacity: 1;
+}
+
+.SideDrawerHide{
+    width: 0;
+    height: 0;
+    box-sizing: border-box;
+    opacity: 0;
 }
 
 .Link{
@@ -18,3 +27,4 @@
     text-align: center;
     color: black;
 }
+

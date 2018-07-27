@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Item from '../../components/items/item';
-import Aux from '../../hoc/Aux';
+import Aux from '../../hoc/Auxiliar';
 
 class newItem extends Component {
 

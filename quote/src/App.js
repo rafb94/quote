@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Cotizador from './containers/Cotizador/cotizador';
 import './App.css';
 import Menu from './containers/Menu/Menu'
-import Aux from './hoc/Aux';
+import Aux from './hoc/Auxiliar';
 import {  BrowserRouter, Route } from 'react-router-dom';
 import NewItems from './containers/NewItems/NewItems';
 import axios from 'axios';

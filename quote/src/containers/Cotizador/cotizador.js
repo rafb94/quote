@@ -3,6 +3,7 @@ import classes from './cotizador.css';
 import Item from '../../components/items/item';
 import Cost from '../../components/cost/cost';
 import axios from 'axios';
+import Aux from '../../hoc/Auxiliar';
 
 
 
@@ -13,10 +14,17 @@ class cotizador extends Component {
         cotizaciones: [],
     }
 
-    componentWillUpdate = () => {
+    
+    componentDidMount = () => {
+        axios.get("https://cotizador-92b14.firebaseio.com/itemPrices.json")
+        .then(response => console.log(response.data["Reactivos Frios"]["B-56"]["Dragon"]) )
+        
+    }
+
+    componentWillMount = () => {
         axios.get("https://cotizador-92b14.firebaseio.com/currentItem/currentItem.json")
-        .then(response => this.setState({currentValue: response}),
-        console.log(this.state.currentValue))
+        .then(response => console.log(response.data) )
+       
     }
    
 
@@ -35,8 +43,8 @@ class cotizador extends Component {
         }
 
         return(
-            <div className={classes.Main}>
-                
+            
+            <Aux> 
                 {item}
                 <Cost leStyle={classes.Element} myvalue={this.state.currentValue}/> 
 
@@ -45,8 +53,9 @@ class cotizador extends Component {
                     <p> Margen: {this.state.margin} %</p>
                     <button> Analizar </button> 
                 </div>
+            </Aux>
             
-            </div>
+            
         )
     }
     
