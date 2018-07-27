@@ -1,21 +1,36 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
+import Cotizador from './containers/Cotizador/cotizador';
 import './App.css';
+import Menu from './containers/Menu/Menu'
+import Aux from './hoc/Aux';
+import {  BrowserRouter, Route } from 'react-router-dom';
+import NewItems from './containers/NewItems/NewItems';
+import axios from 'axios';
 
 class App extends Component {
-  render() {
+
+  state={
+    showSideDrawer: false,
+    }
+
+
+  showSideDrawerHandler = () => {
+    this.setState({showSideDrawer: !this.state.showSideDrawer})
+  }
+
+ 
+  render() {    
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
-      </div>
+      <BrowserRouter>
+        <Aux>
+          <Menu showSideDrawer={this.state.showSideDrawer} clicked={this.showSideDrawerHandler}/>
+          <Route path="/" exact render={() =>  <Cotizador costList={this.state.cost}/>}/>
+          <Route path="/productos" exact render={() =>  <NewItems />}/>
+        </Aux>
+      </BrowserRouter>
     );
   }
+  
 }
 
 export default App;

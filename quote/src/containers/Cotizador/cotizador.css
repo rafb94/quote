@@ -1,0 +1,15 @@
+.Main{
+    width: 90%;
+    display: flex;
+    padding: 10px;
+    margin: 0 auto;
+   
+}
+
+.Element{
+    width: 20rem;
+    height: 20rem; 
+    border: 10px solid #FDA10E;
+    margin: 1rem;
+    text-align: center;
+}
