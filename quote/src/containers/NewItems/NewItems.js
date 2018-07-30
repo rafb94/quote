@@ -59,11 +59,19 @@ class newItem extends Component {
             if (this.state.suppliers && this.state.precios) {
                 for (let i = 0; i < this.state.suppliers.length; i++){
                     let supplier = this.state.suppliers[i].replace(/ /g,'').toLowerCase()
-                    updatedPriceList[supplier] = this.state.precios[supplier];   
+                    let price = null;
+
+                    if(this.state.precios[supplier]){
+                        price = this.state.precios[supplier]
+                    }
+                    
+                    updatedPriceList[supplier] = price ;   
                 }
                 return(updatedPriceList)
             }
         }
+
+        console.log(updatePriceList());
 
 
         fire.database().ref('itemPrices/').child(this.props.currentClass.currentClass)

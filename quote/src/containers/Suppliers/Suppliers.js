@@ -12,9 +12,18 @@ class Suppliers extends Component {
         newSupplier: null,
         showAddSupplierButton: false,
         suppliers: null,
+        deletedSupplier: null,
+        showWarning: false
     }
 
     componentWillMount () {
+        
+        this.retrieveSuppliersHandler();
+        
+    }
+    
+    
+    retrieveSuppliersHandler = () => {
         let responseArray = [];
 
         const myLoop = (response) => {
@@ -28,11 +37,7 @@ class Suppliers extends Component {
         axios.get('https://cotizador-92b14.firebaseio.com/Proveedores.json')
         .then(response => {this.setState({suppliers: myLoop(response.data)})})
 
-        
     }
-    
-    
-
 
     setSupplierHandler = (event) =>{
         event.preventDefault()
@@ -42,31 +47,51 @@ class Suppliers extends Component {
 
     addSupplierHandler = (event) =>{
         event.preventDefault()
-        console.log(this.state.newSupplier.replace(/ /g,'').toLowerCase())
         const supplierName = this.state.newSupplier.slice()
         fire.database().ref('Proveedores/').child(this.state.newSupplier.replace(/ /g,'').toLowerCase())
-        .set({
+        .setValue({
             "supplier": supplierName
         }); 
     }
 
+    showWarningDeleteHandler = () => {
+        let showWarning = !this.state.showWarning.slice()
+        this.setState({showWarning: showWarning})
+    }
+
+   /*  deleteSupplierHandler = (sup) =>{
+
+        let supplier = sup.replace(/ /g,'').toLowerCase()
+        fire.database().ref('Proveedores/').child(supplier)
+        .set(null); 
+
+        this.retrieveSuppliersHandler();
+    }
+ */
 
     render() {
+        /* Show warning */
         
+        
+        /* Retrieve list of suppliers */
+
         let suppliers = <Spinner/>;
         if (this.state.suppliers){
-            console.log(this.state.suppliers)
+            console.log(this.state.deletedSupplier)
             suppliers = this.state.suppliers
-            .map(sup => <li key={sup}> {sup} </li>)
+            .map(sup => <li onClick={() => this.deleteSupplierHandler(sup)} key={sup}> {sup} </li>)
         } 
  
         return(
             <div className={classes.Element}>
+                <h1>Sección Proveedores </h1>
+                <h4>Hacer click sobre proveedor que desea ser eliminado </h4>
                 <ul> {suppliers} </ul>
                 <form onSubmit={this.setSupplierHandler}>
                     <input name="newSupplier" ref={(element) => { this.input = element }}/>
                     <input type="submit" value="Añadir Proveedor Nuevo" /> 
                     {this.state.showAddSupplierButton? <button onClick={this.addSupplierHandler}> Segur@? </button> : null }
+                   {/*  {this.state.showWarning? <button> Borrar permanentemente al proveedor </button> : null } */}
                 </form>
             </div>
         )
