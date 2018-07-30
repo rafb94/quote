@@ -12,7 +12,6 @@ const menu = (props) => {
         <Aux>
             <SideDrawer style={props.showSideDrawer}/>
             <div className={classes.Menu}> 
-                <Logo myStyle={classes.MenuLogo}/> 
                 <div className={classes.TitleDiv}> <span className={classes.Title}>Cotizador</span> </div>
                 <div className={classes.MenuButton} onClick={props.clicked}>  Menu </div>
             </div>
