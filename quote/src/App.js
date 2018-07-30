@@ -5,7 +5,7 @@ import Menu from './containers/Menu/Menu'
 import Aux from './hoc/Auxiliar';
 import {  BrowserRouter, Route } from 'react-router-dom';
 import NewItems from './containers/NewItems/NewItems';
-import axios from 'axios';
+
 
 class App extends Component {
 

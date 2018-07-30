@@ -1,17 +1,8 @@
-.Main{
-    width: 90%;
-    display: flex;
-    padding: 10px;
-    margin: 0 auto;
-   
-}
-
 .Element{
     width: 40%;
-    height: 10rem; 
     border: 10px solid #FDA10E;
     margin: 10px auto;
     text-align: center;
     display: block;
-    padding: 5%;
+    padding: 2rem;
 }

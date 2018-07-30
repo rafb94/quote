@@ -2,7 +2,7 @@ import React from 'react';
 import classes from './SideDrawer.css'
 import { Link } from 'react-router-dom';
 
-const sideDrawer = (props) => {
+const sideDrawer = (props) => { 
 
 
     return(

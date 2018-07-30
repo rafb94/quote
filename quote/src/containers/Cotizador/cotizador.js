@@ -10,20 +10,13 @@ import Aux from '../../hoc/Auxiliar';
 class cotizador extends Component {
 
     state={
-        currentValue: 0,
+        currentItem: 0,
         cotizaciones: [],
     }
 
-    
-    componentDidMount = () => {
-        axios.get("https://cotizador-92b14.firebaseio.com/itemPrices.json")
-        .then(response => console.log(response.data["Reactivos Frios"]["B-56"]["Dragon"]) )
-        
-    }
-
-    componentWillMount = () => {
-        axios.get("https://cotizador-92b14.firebaseio.com/currentItem/currentItem.json")
-        .then(response => console.log(response.data) )
+    componentDidUpdate = () => {
+        axios.get("https://cotizador-92b14.firebaseio.com/currentItem.json")
+        .then(response => this.setState({currentItem : response.data.currentItem}) )
        
     }
    
@@ -39,6 +32,7 @@ class cotizador extends Component {
             listClasses={this.props.itemClasses} 
             changed={this.itemChangeHandler}
             changed1={this.itemClassChangeHandler}
+            dispItemAdd="Nope"
            />
         }
 
@@ -46,13 +40,9 @@ class cotizador extends Component {
             
             <Aux> 
                 {item}
-                <Cost leStyle={classes.Element} myvalue={this.state.currentValue}/> 
+                <Cost leStyle={classes.Element} myvalue={this.state.currentItem}/> 
 
-                <div className={classes.Element}> 
-                    Cotización: <textarea onBlur={this.addQuotationHandler}></textarea> <br/>
-                    <p> Margen: {this.state.margin} %</p>
-                    <button> Analizar </button> 
-                </div>
+                
             </Aux>
             
             

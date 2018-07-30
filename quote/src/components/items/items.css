@@ -1,4 +1,10 @@
 .select{
     font-weight: bold;
-    font-size: 2rem;
+    font-size: 1rem;
+    width: 70%; 
+}
+
+.Input{
+    width: 90%;
+    display: block;
 }
