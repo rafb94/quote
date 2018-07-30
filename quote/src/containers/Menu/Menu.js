@@ -1,6 +1,5 @@
 import React from 'react';
 import classes from './Menu.css';
-import Logo from '../../components/Logo/Logo';
 import SideDrawer from '../../navigation/SideDrawer/SideDrawer';
 import Aux from '../../hoc/Auxiliar';
 

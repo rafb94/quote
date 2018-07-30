@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import classes from './items.css';
 import axios from 'axios';
-import fire from '../../fire';
 import {connect} from 'react-redux'; 
 
 
@@ -24,18 +23,11 @@ class item extends Component {
         itemDetail: null,
         currentClass: null,
         currentItem: null,
-        precios : {
-            ohyoung: null,
-            alliance: null,
-            wishland: null,
-            aditya: null
         }
-    }
     
     componentDidMount = () => {
         axios.get('https://cotizador-92b14.firebaseio.com/itemPrices.json').then(response => {
             let itemClasses = Object.keys(response.data)
-            console.log(response)
             this.setState({itemClasses: itemClasses, 
               cost: response.data, 
               items: {
@@ -54,24 +46,7 @@ class item extends Component {
         )
     }
 
-    itemAddHandler = (event) => {
-        
-        event.preventDefault();
-        fire.database().ref('itemPrices/').child(this.state.currentClass)
-        .child(this.state.newItem).set({
-          ohyoung: this.state.precios["ohyoung"],
-          wishland: this.state.precios["wishland"],
-          alliance: this.state.precios["alliance"],
-          aditya: this.state.precios["aditya"],
-        });
-      }
 
-    itemPriceHandler = (event, supplier) => {
-        const newPriceState = this.state.precios
-        newPriceState[supplier] = event.target.value
-        this.setState({newPriceState})
-        console.log(this.state)
-    }
 
     itemUpdateHandler = (event) => {
 
@@ -83,17 +58,12 @@ class item extends Component {
         
     }
 
-    itemSetHandler = (event) => {
-        this.setState({newItem :  event.target.value})
         
-    }
-
     classUpdateHandler = (event) => {
         let currentClass1 = null;
         
         let currentClass2 = event.target.value; 
             
-        if (this.state.items !== null){ 
     
             switch (currentClass2) {
                 case "ReactivosCalientes":
@@ -109,8 +79,6 @@ class item extends Component {
             
             this.setState({currentClass: currentClass1})
             
-            
-        }
         this.props.onUpdateClass(event)
     }
 
@@ -153,7 +121,7 @@ class item extends Component {
             {/* Select Tag for item classes */}
 
                 <div >
-                    <select  className={classes.select} onChange={this.classUpdateHandler} defaultValue="default">
+                    <select  className={classes.select} onClick={this.props.clicked} onChange={this.classUpdateHandler} defaultValue="default">
                         <option key="default" value="default" disabled> Tipo de Producto</option>
                         {list}
                     </select> 
@@ -170,24 +138,9 @@ class item extends Component {
                 </div>
                 <br/>
 
-            {/* Add new items to the database with corresponding prices (only shown when in "Productos") */}
+            </div>
 
-                <div style={this.props.dispItemAdd ? {display: "none"}: null}>
-                    <form>
-                        <input type="text" onChange={this.itemSetHandler}/> 
-                        <button onClick={this.itemAddHandler}> Añadir item </button>
-                        <br/><br/>
-                        <label className={classes.Input}>Precio OhYoung:</label> 
-                        <input type="text" onChange={(event) => this.itemPriceHandler(event, "ohyoung")}/>
-                        <label className={classes.Input}>Precio Wishland:</label> 
-                        <input type="text" onChange={(event) => this.itemPriceHandler(event, "wishland")}/>
-                        <label className={classes.Input} >Precio Alliance:</label> 
-                        <input type="text" onChange={(event) => this.itemPriceHandler(event, "alliance")}/>
-                        <label className={classes.Input}>Precio Aditya:</label> 
-                        <input type="text" onChange={(event) => this.itemPriceHandler(event, "aditya")}/>
-                    </form>
-                </div>
-            </div> 
+           
            
         )
         
@@ -203,8 +156,8 @@ const mapStateToProps = state =>{
 
 const mapDispatchToProps = dispatch => {
     return{
-        onUpdateItem: (event) => dispatch({type: "UPDATE_ITEM", value: event.target.value}),
-        onUpdateClass: (event) => dispatch({type: "UPDATE_CLASS", value: event.target.value})
+        onUpdateItem: (event) => dispatch({type: "UPDATE_ITEM", valueItem: event.target.value}),
+        onUpdateClass: (event) => dispatch({type: "UPDATE_CLASS", valueClass: event.target.value})
     }
 }
 
