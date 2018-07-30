@@ -113,6 +113,10 @@ class newItem extends Component {
 
         return(
         <Aux>
+            <div className={classes.Element}>
+                <h1>Sección Productos </h1>
+                <h4>Añadir información y hacer click sobre el botón para insertar producto en la base de datos </h4>
+            </div>
            {item}
 
             {/* Add new items to the database with corresponding prices (only shown when in "Productos") */}

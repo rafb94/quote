@@ -39,6 +39,10 @@ class cotizador extends Component {
         return(
             
             <Aux> 
+                <div className={classes.Element}>
+                    <h1>Cotizaciones </h1>
+                    <h4>Escoja el producto y el proveedor para realizar una cotización. </h4>
+                </div>
                 {item}
                 <Cost leStyle={classes.Element} myvalue={this.state.currentItem}/> 
 
