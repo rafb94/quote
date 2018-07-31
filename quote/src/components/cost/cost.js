@@ -4,6 +4,7 @@ import axios from 'axios';
 import Spinner from '../../UI/Spinner/Spinner';
 import Aux from '../../hoc/Auxiliar';
 import classes from './cost.css';
+import Button from '../../UI/Button/Button';
 
 class cost extends Component {
 
@@ -53,10 +54,10 @@ class cost extends Component {
 
             suppliers = Object.keys(this.state.prices)
             .map(
-                sup => <li className={this.state.currentSupplier === sup? classes.SelectedSupplier : null} 
+                sup => <div className={this.state.currentSupplier === sup? classes.SelectedSupplier : null} 
                 key={sup} onClick={() => this.supplierSelectedHandler(sup, this.state.prices[sup])}> 
                 {sup}: {this.state.prices[sup]}
-                </li>)
+                </div>)
        }
 
 
@@ -81,8 +82,8 @@ class cost extends Component {
 
         let priceList = (
         <Aux>
-            <ul style={{textAlign: "left"}}> {suppliers} </ul>
-            <button onClick={this.updatePriceHandler}> Actualizar Precios </button>
+            <div style={{textAlign: "center"}}> {suppliers} </div>
+            <Button clicked={this.updatePriceHandler}> Actualizar Precios </Button>
         </Aux>
     )
 
@@ -94,7 +95,7 @@ class cost extends Component {
         return(
         <Aux>
             <div className={this.props.leStyle}>
-                <div >Precio Proveedor: {currentItem} {currentClass}</div>
+                <h3 style={{color: "#01015B"}}>Precio Proveedor: {currentItem} {currentClass}</h3>
                     {priceList}
             </div>
 
@@ -102,7 +103,7 @@ class cost extends Component {
             <div className={this.props.leStyle}> 
                     Cotización: <input onChange={this.addQuotationHandler}/> <br/>
                     <p> Margen: {this.state.showMargin? ((this.state.currentQuotation /this.state.currentPrice) - 1) * 100 : null} %</p>
-                    <button onClick={this.showMarginHandler}> Analizar </button> 
+                    <Button onClick={this.showMarginHandler}> Analizar </Button> 
             </div>
         </Aux>
        

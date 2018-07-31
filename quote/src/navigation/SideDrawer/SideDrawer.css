@@ -6,6 +6,9 @@
     overflow-x: hidden;
     transition: 0.5s;
     opacity: 1;
+    padding: 2rem 1rem;
+    border-right: 1px solid #016AFB;
+    text-align: center;
 }
 
 .SideDrawerHide{

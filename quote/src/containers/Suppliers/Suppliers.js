@@ -4,6 +4,8 @@ import {connect} from 'react-redux';
 import Spinner from '../../UI/Spinner/Spinner';
 import classes from './Suppliers.css';
 import fire from '../../fire';
+import Button from '../../UI/Button/Button';
+import ButtonSuccess from '../../UI/ButtonSuccess/ButtonSuccess';
 
 
 class Suppliers extends Component {
@@ -13,10 +15,17 @@ class Suppliers extends Component {
         showAddSupplierButton: false,
         suppliers: null,
         deletedSupplier: null,
-        showWarning: false
+        showWarning: false,
+        showSuccess: false
     }
 
     componentWillMount () {
+        
+        this.retrieveSuppliersHandler();
+        
+    }
+
+    componentDidUpdate () {
         
         this.retrieveSuppliersHandler();
         
@@ -49,25 +58,27 @@ class Suppliers extends Component {
         event.preventDefault()
         const supplierName = this.state.newSupplier.slice()
         fire.database().ref('Proveedores/').child(this.state.newSupplier.replace(/ /g,'').toLowerCase())
-        .setValue({
+        .set({
             "supplier": supplierName
         }); 
     }
 
-    showWarningDeleteHandler = () => {
-        let showWarning = !this.state.showWarning.slice()
-        this.setState({showWarning: showWarning})
+    showWarningDeleteHandler = (sup) => {
+        
+        this.setState({showWarning: sup})
     }
 
-   /*  deleteSupplierHandler = (sup) =>{
+    deleteSupplierHandler = (sup) =>{
 
         let supplier = sup.replace(/ /g,'').toLowerCase()
         fire.database().ref('Proveedores/').child(supplier)
         .set(null); 
 
+        this.setState({showSuccess: true})
+
         this.retrieveSuppliersHandler();
     }
- */
+
 
     render() {
         /* Show warning */
@@ -79,20 +90,22 @@ class Suppliers extends Component {
         if (this.state.suppliers){
             console.log(this.state.deletedSupplier)
             suppliers = this.state.suppliers
-            .map(sup => <li onClick={() => this.deleteSupplierHandler(sup)} key={sup}> {sup} </li>)
+            .map(sup => <li onClick={() => this.showWarningDeleteHandler(sup)} key={sup}> {sup} {this.state.showWarning == sup? 
+            <Button clicked={() => this.deleteSupplierHandler(sup)}> Borrar permanentemente al proveedor? </Button> : null } </li>)
         } 
  
         return(
             <div className={classes.Element}>
                 <h1>Sección Proveedores </h1>
-                <h4>Hacer click sobre proveedor que desea ser eliminado </h4>
+                <h4>Hacer click sobre proveedor que deseas eliminar </h4>
                 <ul> {suppliers} </ul>
                 <form onSubmit={this.setSupplierHandler}>
                     <input name="newSupplier" ref={(element) => { this.input = element }}/>
-                    <input type="submit" value="Añadir Proveedor Nuevo" /> 
-                    {this.state.showAddSupplierButton? <button onClick={this.addSupplierHandler}> Segur@? </button> : null }
-                   {/*  {this.state.showWarning? <button> Borrar permanentemente al proveedor </button> : null } */}
+                    <input className={classes.Button} type="submit" value="Añadir Proveedor Nuevo" /> 
+                    {this.state.showAddSupplierButton? <Button className={classes.Button} clicked={this.addSupplierHandler}> Segur@? </Button> : null }
+                    {this.state.showSuccess ? <ButtonSuccess> Proveedor borrado! </ButtonSuccess> : null}
                 </form>
+                
             </div>
         )
     }
@@ -104,13 +117,12 @@ const mapStateToProps = state => {
     }
 }
 
-const mapDispatchToProps = dispatch =>{
+/* const mapDispatchToProps = dispatch =>{
     return{
         onRetrieveSuppliers : (suppliers) => dispatch({type: "RETRIEVE_SUPPLIERS", suppliers: suppliers}),
-        onDeleteSupplier: () => dispatch({type: "DELETE_SUPPLIER"})
     }
-}
+} */
 
-export default connect(mapStateToProps, mapDispatchToProps)(Suppliers);
+export default Suppliers;
 
 

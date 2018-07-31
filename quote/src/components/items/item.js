@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import classes from './items.css';
 import axios from 'axios';
 import {connect} from 'react-redux'; 
+import Select from '../../UI/Select/Select';
 
 
 
@@ -48,7 +49,7 @@ class item extends Component {
 
 
 
-    itemUpdateHandler = (event) => {
+    /* itemUpdateHandler = (event) => {
 
         axios.put('https://cotizador-92b14.firebaseio.com/currentItem.json', {
             currentItem: event.target.value
@@ -56,12 +57,11 @@ class item extends Component {
 
         this.setState({currentItem: event.target.value})
         
-    }
+    } */
 
         
     classUpdateHandler = (event) => {
         let currentClass1 = null;
-        
         let currentClass2 = event.target.value; 
             
     
@@ -121,20 +121,20 @@ class item extends Component {
             {/* Select Tag for item classes */}
 
                 <div >
-                    <select  className={classes.select} onClick={this.props.clicked} onChange={this.classUpdateHandler} defaultValue="default">
+                    <Select clicked={this.props.clicked} changed={this.classUpdateHandler} default="default">
                         <option key="default" value="default" disabled> Tipo de Producto</option>
                         {list}
-                    </select> 
+                    </Select> 
                 </div>
                 <br/>
 
             {/* Select Tag for items: */}
 
                 <div style={this.props.dispProductList ? {display: 'none'} : null}>
-                    <select  className={classes.select} onChange={this.props.onUpdateItem} defaultValue="default">
+                    <Select clicked={this.props.clicked} changed={this.props.onUpdateItem} default="default">
                         <option key="default" value="default" disabled>  Producto</option>
                         {itemDetail} 
-                    </select> 
+                    </Select> 
                 </div>
                 <br/>
 

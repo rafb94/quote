@@ -6,6 +6,8 @@ import axios from 'axios';
 import Spinner from '../../UI/Spinner/Spinner';
 import {connect} from 'react-redux';
 import fire from '../../fire';
+import Button from '../../UI/Button/Button';
+import Label from '../../UI/Label/Label';
 
 class newItem extends Component {
 
@@ -100,8 +102,8 @@ class newItem extends Component {
        let suppliers = <Spinner/>;
         if (this.state.suppliers){
             suppliers = this.state.suppliers
-            .map(sup => <div key={sup}> <label>Precios: {sup} </label> <input type="text" onChange={(event) => 
-                this.itemPriceHandler(event, sup.replace(/ /g,'').toLowerCase())}/> </div>)
+            .map(sup => <Aux key={sup}> <Label>Precio {sup}: </Label> <input type="text" onChange={(event) => 
+                this.itemPriceHandler(event, sup.replace(/ /g,'').toLowerCase())}/> </Aux>)
         } 
 
         /* Retrieve list of all the items of the current class */
@@ -121,15 +123,13 @@ class newItem extends Component {
 
             {/* Add new items to the database with corresponding prices (only shown when in "Productos") */}
             <div className={classes.Element}>
-                <div>
-                    <form>
-                        <input type="text" onChange={this.itemSetHandler}/> 
-                        <button onClick={this.itemAddHandler}> Añadir item </button>
-                        <br/><br/>
-                        <ul> {suppliers} </ul>
-                    </form>
-                </div>
-              
+                <form>
+                    <input type="text" onChange={this.itemSetHandler}/> 
+                    <Button onClick={this.itemAddHandler}> Añadir item </Button>
+                    <br/><br/>
+                    {suppliers} 
+                    
+                </form>
            </div>
         </Aux>
         )

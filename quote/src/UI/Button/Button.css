@@ -1,12 +1,3 @@
-.Element{
-    width: 40%;
-    border: 10px solid #FDA10E;
-    margin: 10px auto;
-    text-align: left;
-    display: block;
-    padding: 2rem;
-}
-
 .Button {
     background-color: white;
     border: 1px solid #016AFB; 
