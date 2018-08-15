@@ -13,7 +13,7 @@ class Suppliers extends Component {
     state={
         newSupplier: null,
         showAddSupplierButton: false,
-        suppliers: null,
+        suppliers: [],
         deletedSupplier: null,
         showWarning: false,
         showSuccess: false
@@ -24,13 +24,6 @@ class Suppliers extends Component {
         this.retrieveSuppliersHandler();
         
     }
-
-    componentDidUpdate () {
-        
-        this.retrieveSuppliersHandler();
-        
-    }
-    
     
     retrieveSuppliersHandler = () => {
         let responseArray = [];
@@ -39,6 +32,7 @@ class Suppliers extends Component {
             for(let i = 0; i < Object.keys(response).length; i++){
                 responseArray.push(response[Object.keys(response)[i]]["supplier"])
             }
+            console.log(responseArray)
             return(responseArray)
         } 
 
@@ -60,7 +54,11 @@ class Suppliers extends Component {
         fire.database().ref('Proveedores/').child(this.state.newSupplier.replace(/ /g,'').toLowerCase())
         .set({
             "supplier": supplierName
-        }); 
+        },  this.setState((prevState) => {
+            return {suppliers: prevState.suppliers.concat(supplierName)}
+          }));
+
+        this.setState({showAddSupplierButton: false})
     }
 
     showWarningDeleteHandler = (sup) => {
@@ -75,10 +73,11 @@ class Suppliers extends Component {
         .set(null); 
 
         this.setState({showSuccess: true})
-
+        setTimeout(()=> {this.setState({showSuccess: false})}, 2000)
         this.retrieveSuppliersHandler();
     }
 
+    
 
     render() {
         /* Show warning */
@@ -103,7 +102,7 @@ class Suppliers extends Component {
                     <input name="newSupplier" ref={(element) => { this.input = element }}/>
                     <input className={classes.Button} type="submit" value="Añadir Proveedor Nuevo" /> 
                     {this.state.showAddSupplierButton? <Button className={classes.Button} clicked={this.addSupplierHandler}> Segur@? </Button> : null }
-                    {this.state.showSuccess ? <ButtonSuccess> Proveedor borrado! </ButtonSuccess> : null}
+                    <ButtonSuccess leClass={this.state.showSuccess} > Proveedor borrado! </ButtonSuccess> 
                 </form>
                 
             </div>
@@ -117,12 +116,12 @@ const mapStateToProps = state => {
     }
 }
 
-/* const mapDispatchToProps = dispatch =>{
+const mapDispatchToProps = dispatch =>{
     return{
         onRetrieveSuppliers : (suppliers) => dispatch({type: "RETRIEVE_SUPPLIERS", suppliers: suppliers}),
     }
-} */
+}
 
-export default Suppliers;
+export default connect(mapStateToProps)(Suppliers);
 
 

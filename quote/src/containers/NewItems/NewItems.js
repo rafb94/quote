@@ -125,7 +125,7 @@ class newItem extends Component {
             <div className={classes.Element}>
                 <form>
                     <input type="text" onChange={this.itemSetHandler}/> 
-                    <Button onClick={this.itemAddHandler}> Añadir item </Button>
+                    <Button clicked={this.itemAddHandler}> Añadir item </Button>
                     <br/><br/>
                     {suppliers} 
                     

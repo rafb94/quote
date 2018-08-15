@@ -102,8 +102,8 @@ class cost extends Component {
             
             <div className={this.props.leStyle}> 
                     Cotización: <input onChange={this.addQuotationHandler}/> <br/>
-                    <p> Margen: {this.state.showMargin? ((this.state.currentQuotation /this.state.currentPrice) - 1) * 100 : null} %</p>
-                    <Button onClick={this.showMarginHandler}> Analizar </Button> 
+                    <p> Margen: {this.state.showMargin? (((this.state.currentQuotation /this.state.currentPrice) - 1) * 100).toFixed(2) : null} %</p>
+                    <Button clicked={this.showMarginHandler}> Analizar </Button> 
             </div>
         </Aux>
        
