@@ -6,6 +6,7 @@ import classes from './Suppliers.css';
 import fire from '../../fire';
 import Button from '../../UI/Button/Button';
 import ButtonSuccess from '../../UI/ButtonSuccess/ButtonSuccess';
+import Input from '../../UI/Input/Input';
 
 
 class Suppliers extends Component {
@@ -94,13 +95,13 @@ class Suppliers extends Component {
         } 
  
         return(
-            <div className={classes.Element}>
+            <div className={this.props.leStyle}>
                 <h1>Sección Proveedores </h1>
                 <h4>Hacer click sobre proveedor que deseas eliminar </h4>
-                <ul> {suppliers} </ul>
+                <ul style={{textAlign: "left"}}> {suppliers} </ul>
                 <form onSubmit={this.setSupplierHandler}>
-                    <input name="newSupplier" ref={(element) => { this.input = element }}/>
-                    <input className={classes.Button} type="submit" value="Añadir Proveedor Nuevo" /> 
+                    <Input leName="newSupplier" leRef={(element) => { this.input = element }}/>
+                    <Input leType="submit" leValue="Añadir Proveedor Nuevo" /> 
                     {this.state.showAddSupplierButton? <Button className={classes.Button} clicked={this.addSupplierHandler}> Segur@? </Button> : null }
                     <ButtonSuccess leClass={this.state.showSuccess} > Proveedor borrado! </ButtonSuccess> 
                 </form>

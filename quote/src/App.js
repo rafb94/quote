@@ -6,6 +6,8 @@ import Aux from './hoc/Auxiliar';
 import {  BrowserRouter, Route } from 'react-router-dom';
 import NewItems from './containers/NewItems/NewItems';
 import Suppliers from './containers/Suppliers/Suppliers';
+import Auth from './containers/Auth/Auth';
+import classes from './App.css';
 
 
 class App extends Component {
@@ -25,9 +27,10 @@ class App extends Component {
       <BrowserRouter>
         <Aux>
           <Menu showSideDrawer={this.state.showSideDrawer} clicked={this.showSideDrawerHandler}/>
-          <Route path="/" exact render={() =>  <Cotizador costList={this.state.cost}/>}/>
-          <Route path="/productos" exact render={() =>  <NewItems />}/>
-          <Route path="/proveedores" exact render={() =>  <Suppliers />}/>
+          <Route path="/" exact render={() =>  <Cotizador leStyle={classes.Element} costList={this.state.cost}/>}/>
+          <Route path="/productos" exact render={() =>  <NewItems leStyle={classes.Element} />}/>
+          <Route path="/proveedores" exact render={() =>  <Suppliers leStyle={classes.Element}  />}/>
+          <Route path="/auth" exact render={() =>  <Auth leStyle={classes.Element}/>}/>
         </Aux>
       </BrowserRouter>
     );

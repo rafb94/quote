@@ -26,3 +26,12 @@
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
+
+.Element{
+    width: 40%;
+    border: 10px solid #FDA10E;
+    margin: 10px auto;
+    text-align: center;
+    display: block;
+    padding: 2rem;
+}

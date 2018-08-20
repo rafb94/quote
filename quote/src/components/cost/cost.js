@@ -5,6 +5,7 @@ import Spinner from '../../UI/Spinner/Spinner';
 import Aux from '../../hoc/Auxiliar';
 import classes from './cost.css';
 import Button from '../../UI/Button/Button';
+import Input from '../../UI/Input/Input';
 
 class cost extends Component {
 
@@ -101,7 +102,7 @@ class cost extends Component {
 
             
             <div className={this.props.leStyle}> 
-                    Cotización: <input onChange={this.addQuotationHandler}/> <br/>
+                    Cotización: <Input changed={this.addQuotationHandler}/> <br/>
                     <p> Margen: {this.state.showMargin? (((this.state.currentQuotation /this.state.currentPrice) - 1) * 100).toFixed(2) : null} %</p>
                     <Button clicked={this.showMarginHandler}> Analizar </Button> 
             </div>

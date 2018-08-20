@@ -3,7 +3,7 @@ import classes from './Select.css';
 
 const select = (props) => {
     return(
-        <select onClick={props.clicked} onChange={props.changed} className={classes.Select} defaultValue={props.default}> {props.children} </select>
+        <select required onClick={props.clicked} onChange={props.changed} className={classes.Select} defaultValue={props.default}> {props.children} </select>
     )
 }
 

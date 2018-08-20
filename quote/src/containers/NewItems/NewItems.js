@@ -8,14 +8,16 @@ import {connect} from 'react-redux';
 import fire from '../../fire';
 import Button from '../../UI/Button/Button';
 import Label from '../../UI/Label/Label';
+import Input from '../../UI/Input/Input';
+import Warning from '../../UI/Warning/Warning';
 
 class newItem extends Component {
 
     state={
         suppliers: null,
         precios : null,
-        currentClass: null,
-        newItem: null
+        newItem: null,
+        showWarning: false
     }
 
     componentWillMount () {
@@ -40,6 +42,7 @@ class newItem extends Component {
 
     updateSupplierPriceListHandler = () =>{
          /* Set keys of prices using the supplier list */
+         console.log("hi!")
         let updatedPriceList = {};
         if (this.state.suppliers) {
             for (let i = 0; i < this.state.suppliers.length; i++){
@@ -53,7 +56,7 @@ class newItem extends Component {
 
     itemAddHandler = (event) => {
         event.preventDefault();
-
+       
         const updatePriceList = () => {
             console.log(this.state.precios)
 
@@ -81,28 +84,37 @@ class newItem extends Component {
       }
 
     itemPriceHandler = (event, supplier) => {
-        const newPriceState = this.state.precios
-        newPriceState[supplier] = event.target.value
-        this.setState({newPriceState})
-        console.log(this.state)
+        if(!this.props.currentClass.currentClass){
+            this.setState({showWarning: true})
+        }else{
+            this.setState({showWarning: false})
+            const newPriceState = this.state.precios
+            newPriceState[supplier] = event.target.value
+            this.setState({newPriceState})
+        }
+       
     }
 
     
     itemSetHandler = (event) => {
         this.setState({newItem :  event.target.value})
-        
     }
 
 
     render(){
 
-      console.log(this.state.precios)
+      /* Show warning if user is trying to add products without having selected a class */
+
+      let warning =  warning = <Warning leDisp={this.state.showWarning}> 
+                                    Por favor selecciona una categoría de producto 
+                                </Warning>;
+
        /*  Retrieve all suppliers */
 
        let suppliers = <Spinner/>;
         if (this.state.suppliers){
             suppliers = this.state.suppliers
-            .map(sup => <Aux key={sup}> <Label>Precio {sup}: </Label> <input type="text" onChange={(event) => 
+            .map(sup => <Aux key={sup}> <Label>Precio {sup}: </Label> <Input leType="text" changed={(event) => 
                 this.itemPriceHandler(event, sup.replace(/ /g,'').toLowerCase())}/> </Aux>)
         } 
 
@@ -110,22 +122,24 @@ class newItem extends Component {
         let item = null;
 
         if (this.props.itemList !== null) {
-            item =  <Item clicked={this.updateSupplierPriceListHandler} leStyle={classes.Element} list={this.props.itemClasses} dispProductList="Nope"/>
+            item =  <Item clicked={this.updateSupplierPriceListHandler} leStyle={this.props.leStyle} list={this.props.itemClasses} dispProductList="Nope"/>
         }
 
         return(
         <Aux>
-            <div className={classes.Element}>
+            <div className={this.props.leStyle}>
                 <h1>Sección Productos </h1>
                 <h4>Añadir información y hacer click sobre el botón para insertar producto en la base de datos </h4>
             </div>
            {item}
 
             {/* Add new items to the database with corresponding prices (only shown when in "Productos") */}
-            <div className={classes.Element}>
-                <form>
-                    <input type="text" onChange={this.itemSetHandler}/> 
-                    <Button clicked={this.itemAddHandler}> Añadir item </Button>
+            <div className={this.props.leStyle}>
+                <form onSubmit={this.itemAddHandler}>
+                   {/*  <input type="text" onChange={this.itemSetHandler}/>  */}
+                    <Input leType="text" changed={this.itemSetHandler}/> 
+                    <Input leType="submit" leValue="Añadir item" />
+                    {warning}
                     <br/><br/>
                     {suppliers} 
                     

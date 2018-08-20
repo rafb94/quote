@@ -28,7 +28,7 @@ class cotizador extends Component {
 
         if (this.props.itemList !== null) {
             item =  <Item 
-            leStyle={classes.Element} 
+            leStyle={this.props.leStyle} 
             listClasses={this.props.itemClasses} 
             changed={this.itemChangeHandler}
             changed1={this.itemClassChangeHandler}
@@ -39,12 +39,12 @@ class cotizador extends Component {
         return(
             
             <Aux> 
-                <div className={classes.Element}>
+                <div className={this.props.leStyle}>
                     <h1>Cotizaciones </h1>
                     <h4>Escoja el producto y el proveedor para realizar una cotización. </h4>
                 </div>
                 {item}
-                <Cost leStyle={classes.Element} myvalue={this.state.currentItem}/> 
+                <Cost leStyle={this.props.leStyle} myvalue={this.state.currentItem}/> 
 
                 
             </Aux>

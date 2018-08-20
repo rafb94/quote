@@ -1,7 +1,9 @@
 const initialState =  {
     currentItem: null,
     currentClass: null,
-    suppliers: null
+    suppliers: null,
+    email: null,
+    password: null
 }
 
 const reducer = (state = initialState, action) => {
@@ -37,6 +39,13 @@ const reducer = (state = initialState, action) => {
             return{ 
                 ...state,
                 suppliers: action.suppliers
+            }
+        case "AUTH_START":
+            alert(action.password)
+            return{
+                ...state,
+                email: action.email,
+                password: action.password
             }
         default:
             return state

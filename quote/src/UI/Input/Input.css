@@ -1,0 +1,16 @@
+.Input{
+    color: #01015B;
+    border: 1px solid #016AFB;
+    border-radius: 5px;
+    padding: 0.5rem;
+    margin: 0.5rem;
+}
+
+.Button {
+    background-color: white;
+    border: 1px solid #016AFB; 
+    color: #01015B;
+    padding: 0.5rem;
+    margin: 0.5rem;
+    border-radius: 5px;
+}
