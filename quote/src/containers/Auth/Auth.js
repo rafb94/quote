@@ -20,7 +20,7 @@ class auth extends Component {
     }
 
     setPasswordHandler = (event) => {
-        
+        console.log(this.props.token)
         this.setState({password: event.target.value})
     }
 
@@ -36,7 +36,8 @@ class auth extends Component {
 
     render () {
 
-        return(
+        
+        return( 
         <Aux>
             <div className={this.props.leStyle}>
                 <span style={{fontSize: "200%", fontWeight: "bold"}}> Log In </span>
@@ -56,6 +57,12 @@ class auth extends Component {
     }
 }
 
+const mapStateToProps = state =>{
+    return{
+        token: state.token
+    }
+}
+
 const mapDispatchToProps = dispatch => {
     return{
         onAuth: (email, password) => dispatch(actions.onAuth(email, password))
@@ -63,4 +70,4 @@ const mapDispatchToProps = dispatch => {
 }
 
 
-export default connect(null, mapDispatchToProps)(auth);
+export default connect(mapStateToProps, mapDispatchToProps)(auth);

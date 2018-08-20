@@ -3,7 +3,10 @@ const initialState =  {
     currentClass: null,
     suppliers: null,
     email: null,
-    password: null
+    password: null,
+    isAuth: false,
+    token: null,
+    userId: null
 }
 
 const reducer = (state = initialState, action) => {
@@ -30,7 +33,6 @@ const reducer = (state = initialState, action) => {
                 
                 }   
             }
-            console.log(action.valueClass)
             return{ 
                 ...state,
                 currentClass: action.valueClass
@@ -41,11 +43,23 @@ const reducer = (state = initialState, action) => {
                 suppliers: action.suppliers
             }
         case "AUTH_START":
-            alert(action.password)
             return{
                 ...state,
                 email: action.email,
                 password: action.password
+            }
+        case "AUTH_SUCCESS":
+            return{
+                ...state,
+                token: action.token,
+                userId: action.userId
+            }
+        case "LOGOUT":
+            console.log("hi!");
+            return{
+                ...state,
+                token: null,
+                userId: null,
             }
         default:
             return state

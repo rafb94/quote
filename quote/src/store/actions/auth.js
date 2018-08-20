@@ -1,14 +1,19 @@
+import axios from 'axios';
 
-export const authStart = () => {
+
+export const authStart = (email, password) => {
     return{
-        type: 'AUTH_START'
+        type: 'AUTH_START',
+        email: email,
+        password: password
     }
 }
 
-export const authSuccess = (authData) => {
+export const authSuccess = (token, userId) => {
     return{
         type: 'AUTH_SUCCESS',
-        authData: authData
+        token: token,
+        userId: userId
     }
 }
 
@@ -22,6 +27,31 @@ export const authFail = (error) =>{
 
 export const onAuth = (email, password) => {
     return dispatch => {
-        dispatch(authStart())
+        dispatch(authStart(email, password));
+        let authData = {
+            email: email,
+            password: password,
+            returnSecureToken: true
+        }
+        let url = 'https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key=AIzaSyArFYBuC3PekSrCsy-geqmvKPVntG9mBIE'
+
+        axios.post(url, authData)
+        .then(response => {
+            const expirationDate = new Date(new Date().getTime() + response.data.expiresIn * 1000);
+            localStorage.setItem('token', response.data.idToken);
+            localStorage.setItem('expirationDate', expirationDate);
+            localStorage.setItem('userId', response.data.localId);
+            dispatch(authSuccess(response.data.idToken, response.data.localId));
+            console.log(response)})
+            .catch(err => authFail(err))
+    }
+}
+
+export const onLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('expirationDate');
+    localStorage.removeItem('userId');
+    return{
+        type: "LOGOUT"
     }
 }
