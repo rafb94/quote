@@ -26,7 +26,7 @@ class auth extends Component {
 
     submitHandler = (event) => {
         event.preventDefault();
-        this.props.onAuth(this.state.email, this.state.password)
+        this.props.onAuth(this.state.email, this.state.password, this.state.login)
     }
 
     loginSignupHandler = () => {
@@ -40,16 +40,17 @@ class auth extends Component {
         return( 
         <Aux>
             <div className={this.props.leStyle}>
-                <span style={{fontSize: "200%", fontWeight: "bold"}}> Log In </span>
+                <span style={{fontSize: "200%", fontWeight: "bold"}}> {this.state.login? "Log In" : "Registrarse" } </span>
+                {this.state.login? <div style={{color: "green"}} onClick={this.loginSignupHandler}>Registrarse?</div> : <div style={{color: "green"}} onClick={this.loginSignupHandler}>Log in?</div>}
             </div>
             <div className={this.props.leStyle}>
                 <form onSubmit={this.submitHandler}>
                     <Label> Email: </Label>
                     <Input leType="email" lePlaceholder="ejemplo@abc.com" changed={this.setEmailHandler}/>
                     <Label> Contraseña: </Label>
-                    <Input leType="text" lePlaceholder="contraseña" changed={this.setPasswordHandler}/><br/>
-                    <Input leType="submit" leValue={this.state.login?"Entrar": "Registrar" } />
-                    {this.state.login? <div onClick={this.loginSignupHandler}>Registrarse</div> : <div onClick={this.loginSignupHandler}>Log in</div>}
+                    <Input leType="password" lePlaceholder="contraseña" changed={this.setPasswordHandler}/><br/>
+                    <Input leType="submit" leValue={this.state.login?"Log in": "Registrarse" } />
+                    {this.props.error? <div> {this.props.error} </div> : null}
                 </form>
             </div>
         </Aux>
@@ -59,13 +60,14 @@ class auth extends Component {
 
 const mapStateToProps = state =>{
     return{
-        token: state.token
+        token: state.token,
+        error: state.error
     }
 }
 
 const mapDispatchToProps = dispatch => {
     return{
-        onAuth: (email, password) => dispatch(actions.onAuth(email, password))
+        onAuth: (email, password, login) => dispatch(actions.onAuth(email, password, login))
     }
 }
 

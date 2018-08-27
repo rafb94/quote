@@ -1,1 +1,1 @@
-export {onAuth, onLogout} from './auth.js';
+export {onAuth, onLogout, authCheckState} from './auth.js';

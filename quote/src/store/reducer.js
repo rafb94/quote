@@ -1,3 +1,5 @@
+import * as actionTypes from './actions/actionTypes';
+
 const initialState =  {
     currentItem: null,
     currentClass: null,
@@ -6,7 +8,8 @@ const initialState =  {
     password: null,
     isAuth: false,
     token: null,
-    userId: null
+    userId: null,
+    error: null
 }
 
 const reducer = (state = initialState, action) => {
@@ -49,13 +52,19 @@ const reducer = (state = initialState, action) => {
                 password: action.password
             }
         case "AUTH_SUCCESS":
+        console.log("success")
             return{
                 ...state,
                 token: action.token,
                 userId: action.userId
             }
+        case actionTypes.AUTH_FAIL:
+            console.log("hi!")
+            return{
+                ...state,
+                error: action.error
+            }
         case "LOGOUT":
-            console.log("hi!");
             return{
                 ...state,
                 token: null,

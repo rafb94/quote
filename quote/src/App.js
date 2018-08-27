@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Cotizador from './containers/Cotizador/cotizador';
+import {connect} from 'react-redux';
 import './App.css';
 import Menu from './containers/Menu/Menu'
 import Aux from './hoc/Auxiliar';
@@ -8,6 +9,7 @@ import NewItems from './containers/NewItems/NewItems';
 import Suppliers from './containers/Suppliers/Suppliers';
 import Auth from './containers/Auth/Auth';
 import classes from './App.css';
+import * as actions from './store/actions/index';
 
 
 class App extends Component {
@@ -16,6 +18,10 @@ class App extends Component {
     showSideDrawer: false,
     }
 
+  
+  componentDidMount() {
+    this.props.onTryAutoSignUp();
+  }
 
   showSideDrawerHandler = () => {
     this.setState({showSideDrawer: !this.state.showSideDrawer})
@@ -38,4 +44,10 @@ class App extends Component {
   
 }
 
-export default App;
+const mapDisaptchToProps = dispatch => {
+  return{
+    onTryAutoSignUp: () => dispatch(actions.authCheckState())
+  }
+}
+
+export default connect(null, mapDisaptchToProps)(App);
