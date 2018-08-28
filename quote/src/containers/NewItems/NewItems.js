@@ -40,7 +40,7 @@ class newItem extends Component {
 
     updateSupplierPriceListHandler = () =>{
          /* Set keys of prices using the supplier list */
-         console.log("hi!")
+       
         let updatedPriceList = {};
         if (this.state.suppliers) {
             for (let i = 0; i < this.state.suppliers.length; i++){
@@ -54,7 +54,7 @@ class newItem extends Component {
 
     itemAddHandler = (event) => {
         event.preventDefault();
-       
+        console.log("hi!");
         const updatePriceList = () => {
             console.log(this.state.precios)
 
@@ -75,15 +75,17 @@ class newItem extends Component {
         }
 
         console.log(updatePriceList());
+        
 
-
-        fire.database().ref('itemPrices/').child(this.props.currentClass.currentClass)
+        fire.database().ref('itemPrices/').child(this.props.currentClass)
         .child(this.state.newItem).set(updatePriceList());
       }
 
     itemPriceHandler = (event, supplier) => {
-        if(!this.props.currentClass.currentClass){
+        if(!this.props.currentClass){
             this.setState({showWarning: true})
+            document.getElementById(supplier).value = "";
+            
         }else{
             this.setState({showWarning: false})
             const newPriceState = this.state.precios
@@ -95,7 +97,13 @@ class newItem extends Component {
 
     
     itemSetHandler = (event) => {
-        this.setState({newItem :  event.target.value})
+        if(this.props.currentClass){
+            this.setState({newItem :  event.target.value})
+        }else{
+            this.setState({showWarning: true})
+            document.getElementById("newItemInput").value = "";
+        }
+        
     }
 
 
@@ -104,7 +112,7 @@ class newItem extends Component {
       /* Show warning if user is trying to add products without having selected a class */
 
       let warning =  warning = <Warning leDisp={this.state.showWarning}> 
-                                    Por favor selecciona una categoría de producto 
+                                    Por favor selecciona una categoría de producto o ingresa el nombre del artículo nuevo.
                                 </Warning>;
 
        /*  Retrieve all suppliers */
@@ -112,7 +120,7 @@ class newItem extends Component {
        let suppliers = <Spinner/>;
         if (this.state.suppliers){
             suppliers = this.state.suppliers
-            .map(sup => <Aux key={sup}> <Label>Precio {sup}: </Label> <Input leType="text" changed={(event) => 
+            .map(sup => <Aux key={sup}> <Label>Precio {sup}: </Label> <Input leId={sup} leType="text" changed={(event) => 
                 this.itemPriceHandler(event, sup.replace(/ /g,'').toLowerCase())}/> </Aux>)
         } 
 
@@ -135,7 +143,7 @@ class newItem extends Component {
             <div className={this.props.leStyle}>
                 <form onSubmit={this.itemAddHandler}>
                    {/*  <input type="text" onChange={this.itemSetHandler}/>  */}
-                    <Input leType="text" changed={this.itemSetHandler}/> 
+                    <Input leId="newItemInput" leType="text" changed={this.itemSetHandler}/> 
                     <Input leType="submit" leValue="Añadir item" />
                     {warning}
                     <br/><br/>
@@ -150,7 +158,7 @@ class newItem extends Component {
 
 const mapStateToProps = state => {
     return{
-        currentClass: state
+        currentClass: state.currentClass
     }
 }
 

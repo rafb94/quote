@@ -95,7 +95,7 @@ class Suppliers extends Component {
         
         /* Retrieve list of suppliers */
 
-        let suppliers = <Button  clicked={this.updateSupplierHandler}> Actualizar proveedores </Button>;
+        let suppliers = this.props.token ? <Button  clicked={this.updateSupplierHandler}> Actualizar proveedores </Button>: <div> Ingresar credenciales, por favor.</div>;
         if (this.state.suppliers){
             console.log(this.state.suppliers)
             suppliers = this.state.suppliers

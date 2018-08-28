@@ -12,7 +12,8 @@ const input = (props) => {
         value={props.leValue} 
         ref={props.leRef}
         type={props.leType}
-        placeholder={props.lePlaceholder}/>);
+        placeholder={props.lePlaceholder}
+        id={props.leId}/>);
 }
 
 
