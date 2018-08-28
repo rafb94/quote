@@ -14,32 +14,34 @@ class Suppliers extends Component {
     state={
         newSupplier: null,
         showAddSupplierButton: false,
-        suppliers: [],
+        suppliers: null,
         deletedSupplier: null,
         showWarning: false,
         showSuccess: false
     }
 
-    componentWillMount () {
-        
-        this.retrieveSuppliersHandler();
-        
+    componentDidMount () {
+        this.retrieveSuppliersHandler(this.props.token, this.props.userId);
+        console.log(this.state.suppliers)
     }
-    
-    retrieveSuppliersHandler = () => {
+
+    retrieveSuppliersHandler = (token, userId) => {
         let responseArray = [];
+        const queryParams = '?auth=' + token + '&orderBy="userId"&equalTo="' + userId + '"'; 
 
         const myLoop = (response) => {
             for(let i = 0; i < Object.keys(response).length; i++){
                 responseArray.push(response[Object.keys(response)[i]]["supplier"])
             }
-            console.log(responseArray)
+            
             return(responseArray)
         } 
 
 
-        axios.get('https://cotizador-92b14.firebaseio.com/Proveedores.json')
-        .then(response => {this.setState({suppliers: myLoop(response.data)})})
+        axios.get('https://cotizador-92b14.firebaseio.com/Proveedores.json' + queryParams)
+        .then(response => {this.setState({suppliers: myLoop(response.data)})}).catch(error => this.setState({error: error}))
+
+       
 
     }
 
@@ -52,9 +54,11 @@ class Suppliers extends Component {
     addSupplierHandler = (event) =>{
         event.preventDefault()
         const supplierName = this.state.newSupplier.slice()
+        const userId = this.props.userId;
         fire.database().ref('Proveedores/').child(this.state.newSupplier.replace(/ /g,'').toLowerCase())
         .set({
-            "supplier": supplierName
+            "supplier": supplierName,
+            "userId": userId
         },  this.setState((prevState) => {
             return {suppliers: prevState.suppliers.concat(supplierName)}
           }));
@@ -63,7 +67,7 @@ class Suppliers extends Component {
     }
 
     showWarningDeleteHandler = (sup) => {
-        
+        this.retrieveSuppliersHandler(this.props.token, this.props.userId);
         this.setState({showWarning: sup})
     }
 
@@ -78,6 +82,11 @@ class Suppliers extends Component {
         this.retrieveSuppliersHandler();
     }
 
+    updateSupplierHandler = (event) => {
+        event.preventDefault();
+        this.retrieveSuppliersHandler(this.props.token, this.props.userId);
+    }
+
     
 
     render() {
@@ -86,23 +95,25 @@ class Suppliers extends Component {
         
         /* Retrieve list of suppliers */
 
-        let suppliers = <Spinner/>;
+        let suppliers = <Button  clicked={this.updateSupplierHandler}> Actualizar proveedores </Button>;
         if (this.state.suppliers){
-            console.log(this.state.deletedSupplier)
+            console.log(this.state.suppliers)
             suppliers = this.state.suppliers
-            .map(sup => <li onClick={() => this.showWarningDeleteHandler(sup)} key={sup}> {sup} {this.state.showWarning == sup? 
+            .map(sup => <li style={{display: "block"}} onClick={() => this.showWarningDeleteHandler(sup)} key={sup}> {sup} {this.state.showWarning == sup? 
             <Button clicked={() => this.deleteSupplierHandler(sup)}> Borrar permanentemente al proveedor? </Button> : null } </li>)
         } 
  
         return(
             <div className={this.props.leStyle}>
                 <h1>Sección Proveedores </h1>
+                
                 <h4>Hacer click sobre proveedor que deseas eliminar </h4>
-                <ul style={{textAlign: "left"}}> {suppliers} </ul>
+                <ul style={{textAlign: "center", padding: 0}}> {suppliers} </ul>
                 <form onSubmit={this.setSupplierHandler}>
                     <Input leName="newSupplier" leRef={(element) => { this.input = element }}/>
                     <Input leType="submit" leValue="Añadir Proveedor Nuevo" /> 
-                    {this.state.showAddSupplierButton? <Button className={classes.Button} clicked={this.addSupplierHandler}> Segur@? </Button> : null }
+                    {this.state.showAddSupplierButton? <Button className={classes.Button} clicked={this.addSupplierHandler}> 
+                    Segur@? </Button> : null }
                     <ButtonSuccess leClass={this.state.showSuccess} > Proveedor borrado! </ButtonSuccess> 
                 </form>
                 
@@ -113,16 +124,18 @@ class Suppliers extends Component {
 
 const mapStateToProps = state => {
     return{
-        suppliers: state
+        suppliers: state,
+        userId: state.userId,
+        token: state.token
     }
 }
 
-const mapDispatchToProps = dispatch =>{
+/* const mapDispatchToProps = dispatch =>{
     return{
         onRetrieveSuppliers : (suppliers) => dispatch({type: "RETRIEVE_SUPPLIERS", suppliers: suppliers}),
     }
 }
-
+ */
 export default connect(mapStateToProps)(Suppliers);
 
 

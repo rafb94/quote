@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import classes from './items.css';
 import axios from 'axios';
 import {connect} from 'react-redux'; 
 import Select from '../../UI/Select/Select';

@@ -1,12 +1,10 @@
 import React, { Component } from 'react';
 import Item from '../../components/items/item';
 import Aux from '../../hoc/Auxiliar';
-import classes from './NewItems.css';
 import axios from 'axios';
 import Spinner from '../../UI/Spinner/Spinner';
 import {connect} from 'react-redux';
 import fire from '../../fire';
-import Button from '../../UI/Button/Button';
 import Label from '../../UI/Label/Label';
 import Input from '../../UI/Input/Input';
 import Warning from '../../UI/Warning/Warning';

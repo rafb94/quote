@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import classes from './Auth.css';
 import Aux from '../../hoc/Auxiliar';
 import Label from '../../UI/Label/Label';
 import Input from '../../UI/Input/Input';

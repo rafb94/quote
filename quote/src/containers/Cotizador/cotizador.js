@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import classes from './cotizador.css';
 import Item from '../../components/items/item';
 import Cost from '../../components/cost/cost';
 import axios from 'axios';

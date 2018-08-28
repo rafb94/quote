@@ -44,11 +44,12 @@ const authFail = (error) =>{
     }
 }
 
-const checkAuthTimeout = expirationDate =>{
+const checkAuthTimeout = (expirationDate) =>{
+    console.log(expirationDate * 1);
     return dispatch => {
         setTimeout(() => {
             dispatch(onLogout())
-        }, expirationDate)
+        }, expirationDate * 1000)
     }
 }
 
@@ -77,13 +78,14 @@ export const onAuth = (email, password, login) => {
             localStorage.setItem('expirationDate', expirationDate);
             localStorage.setItem('userId', response.data.localId);
             dispatch(authSuccess(response.data.idToken, response.data.localId));
-            dispatch(checkAuthTimeout(expirationDate))
+            dispatch(checkAuthTimeout(response.data.expiresIn))
             console.log(response)})
             .catch(err => authFail(err))
     }
 }
 
 export const onLogout = () => {
+    console.log("hi!")
     localStorage.removeItem('token');
     localStorage.removeItem('expirationDate');
     localStorage.removeItem('userId');
