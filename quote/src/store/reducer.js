@@ -52,7 +52,7 @@ const reducer = (state = initialState, action) => {
                 password: action.password
             }
         case "AUTH_SUCCESS":
-        console.log("success")
+        console.log(action.userId)
             return{
                 ...state,
                 token: action.token,

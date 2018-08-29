@@ -8,6 +8,7 @@ import {  BrowserRouter, Route } from 'react-router-dom';
 import NewItems from './containers/NewItems/NewItems';
 import Suppliers from './containers/Suppliers/Suppliers';
 import Auth from './containers/Auth/Auth';
+import Categories from './containers/Categories/Categories';
 import classes from './App.css';
 import * as actions from './store/actions/index';
 
@@ -37,6 +38,7 @@ class App extends Component {
           <Route path="/productos" exact render={() =>  <NewItems leStyle={classes.Element} />}/>
           <Route path="/proveedores" exact render={() =>  <Suppliers leStyle={classes.Element}  />}/>
           <Route path="/auth" exact render={() =>  <Auth leStyle={classes.Element}/>}/>
+          <Route path="/categorias" exact render={() =>  <Categories leStyle={classes.Element}/>}/>
         </Aux>
       </BrowserRouter>
     );

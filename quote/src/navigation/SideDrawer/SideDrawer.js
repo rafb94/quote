@@ -11,6 +11,7 @@ const sideDrawer = (props) => {
                 <Link  className={classes.Link} to="/productos"> Productos</Link>
                 <Link  className={classes.Link} to="/proveedores"> Proveedores </Link>
                 <Link  className={classes.Link} to="/auth"> Log In </Link>
+                <Link  className={classes.Link} to="/categorias"> Categorías de Producto</Link>
         </nav>
     )
 }

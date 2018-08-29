@@ -54,7 +54,7 @@ class newItem extends Component {
 
     itemAddHandler = (event) => {
         event.preventDefault();
-        console.log("hi!");
+        console.log(this.props.userId);
         const updatePriceList = () => {
             console.log(this.state.precios)
 
@@ -66,15 +66,17 @@ class newItem extends Component {
 
                     if(this.state.precios[supplier]){
                         price = this.state.precios[supplier]
+                        console.log(price)
                     }
                     
                     updatedPriceList[supplier] = price ;   
                 }
+                updatedPriceList["userId"] = this.props.userId
                 return(updatedPriceList)
             }
         }
 
-        console.log(updatePriceList());
+        
         
 
         fire.database().ref('itemPrices/').child(this.props.currentClass)
@@ -158,7 +160,8 @@ class newItem extends Component {
 
 const mapStateToProps = state => {
     return{
-        currentClass: state.currentClass
+        currentClass: state.currentClass,
+        userId: state.userId
     }
 }
 

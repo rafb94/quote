@@ -9,14 +9,7 @@ class item extends Component {
 
     state={
         newItem: "",
-        items: {
-            ReactivosFrios: null,
-            ReactivosCalientes: null,
-            Directos: null,
-            Dispersos: null,
-            Basicos: null,
-            Auxiliares: null
-        },
+        items: null,
         cost: null,
         itemClasses: null,
         error: false,
@@ -27,17 +20,11 @@ class item extends Component {
     
     componentDidMount = () => {
         axios.get('https://cotizador-92b14.firebaseio.com/itemPrices.json').then(response => {
+            console.log(response.data)
             let itemClasses = Object.keys(response.data)
             this.setState({itemClasses: itemClasses, 
-              cost: response.data, 
-              items: {
-                ReactivosFrios: response.data["ReactivosFrios"],
-                ReactivosCalientes: response.data["ReactivosCalientes"],
-                Directos: response.data["Directos"],
-                Dispersos: response.data["Dispersos"],
-                Basicos: response.data["Basicos"],
-                Auxiliares: response.data["Auxiliares"]
-              },
+              cost: response.data,
+              items: response.data, 
               currentItemClass: "",
             }) 
         }).catch(error => {
@@ -46,39 +33,24 @@ class item extends Component {
         )
     }
 
-
-
-    /* itemUpdateHandler = (event) => {
-
-        axios.put('https://cotizador-92b14.firebaseio.com/currentItem.json', {
-            currentItem: event.target.value
-        })
-
-        this.setState({currentItem: event.target.value})
-        
-    } */
-
+    showItemsOfClassHandler = () => {
+        if (this.state.currentClass){
+            axios.get('https://cotizador-92b14.firebaseio.com/itemPrices.json').then(response => {
+                let currentClass = this.state.currentClass.slice();
+                console.log(response.data[currentClass])
+                
+            }).catch(error => {
+                this.setState({error: true})
+            }
+            )  
+        }
+    }
         
     classUpdateHandler = (event) => {
-        let currentClass1 = null;
-        let currentClass2 = event.target.value; 
-            
-    
-            switch (currentClass2) {
-                case "ReactivosCalientes":
-                    currentClass1= "ReactivosCalientes";
-                    break;
-                case "ReactivosFrios":
-                    currentClass1= "ReactivosFrios";
-                    break;
-                default:
-                    currentClass1= currentClass2;
-               
-            }
-            
-            this.setState({currentClass: currentClass1})
-            
+     
+        this.setState({currentClass: event.target.value})
         this.props.onUpdateClass(event)
+        this.showItemsOfClassHandler();
     }
 
     
@@ -105,8 +77,14 @@ class item extends Component {
          if (this.state.currentClass !== null){
 
             let currentClass = this.state.currentClass.slice();
+            let items = null;
+
+            items = Object.keys(this.state.items[currentClass])
+        
+
+            console.log(items)
             
-            itemDetail= Object.keys(this.state.items[currentClass]).map(num =>{  
+            itemDetail= items.map(num =>{  
                 return (<option key={num}> {num}</option>) 
             })
            
