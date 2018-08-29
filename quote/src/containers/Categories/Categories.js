@@ -74,8 +74,11 @@ class categories extends Component {
 
     render() {
         /* Retrieve current item categories */
-        let categories = null;
-        this.state.categories? categories = this.state.categories.map(cat => <li onClick={() => this.showWarningDeleteHandler(cat)} key={cat} style={{display: "block"}}> {cat} {this.state.showWarning == cat? 
+        let categories = (
+            <Warning leDisp="yes"> 
+            Por favor regístrate o ingresa tus datos en "Log In".
+        </Warning>);
+        this.state.categories && this.props.token? categories = this.state.categories.map(cat => <li onClick={() => this.showWarningDeleteHandler(cat)} key={cat} style={{display: "block"}}> {cat} {this.state.showWarning == cat? 
             <Button 
             clicked={() => this.deleteCategoryHandler(cat)}> Borrar permanentemente la categoría? Cuidado: Todos los items 
             de la categoría serán borrados.
@@ -85,17 +88,23 @@ class categories extends Component {
 
 
         /* Show warning if user is not logged in */
-        let categoryInput = (
+        let category = (
         <Warning leDisp="yes"> 
         Por favor regístrate o ingresa tus datos en "Log In".
     </Warning>)
 
-        if(this.props.userId){
-            categoryInput = ( <form onSubmit={this.addCategoryHandler}>
-                <Input leType="text" changed={this.setCategoryHandler}/>
-                <Button clicked={this.showConfirmHandler}> Añadir categoría </Button>
-                {this.state.showConfirm? <Input leType="submit" leValue=" Segur@?" /> : null}
-                </form>
+        if(this.props.token){
+            category = ( 
+                <Aux>
+                    <h2>Añadir categoría: </h2>
+                    <form onSubmit={this.addCategoryHandler}>
+                        <Input leType="text" changed={this.setCategoryHandler}/>
+                        <Button clicked={this.showConfirmHandler}> Añadir categoría </Button>
+                        {this.state.showConfirm? <Input leType="submit" leValue=" Segur@?" /> : null}
+                    </form>
+                    <ButtonSuccess leClass={this.state.showSuccessAdd} > Categoría añadida! </ButtonSuccess>
+                    <ButtonSuccess leClass={this.state.showSuccessDelete} > Categoría borrada! </ButtonSuccess>
+                </Aux>
             )
         }
         
@@ -109,10 +118,7 @@ class categories extends Component {
                 </div>
 
                 <div className={this.props.leStyle}> 
-                    <h2>Añadir categoría: </h2>
-                    {categoryInput}
-                    <ButtonSuccess leClass={this.state.showSuccessAdd} > Categoría añadida! </ButtonSuccess>
-                    <ButtonSuccess leClass={this.state.showSuccessDelete} > Categoría borrada! </ButtonSuccess>
+                    {category}
                 </div> 
                 
             </Aux>
@@ -122,7 +128,8 @@ class categories extends Component {
 
 const mapStateToProps = state => {
     return{
-        userId: state.userId
+        userId: state.userId,
+        token: state.token
     }
 }
 

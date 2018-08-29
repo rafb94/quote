@@ -7,6 +7,7 @@ import fire from '../../fire';
 import Button from '../../UI/Button/Button';
 import ButtonSuccess from '../../UI/ButtonSuccess/ButtonSuccess';
 import Input from '../../UI/Input/Input';
+import Warning from '../../UI/Warning/Warning';
 
 
 class Suppliers extends Component {
@@ -95,7 +96,7 @@ class Suppliers extends Component {
         
         /* Retrieve list of suppliers */
 
-        let suppliers = this.props.token ? <Button  clicked={this.updateSupplierHandler}> Actualizar proveedores </Button>: <div> Ingresar credenciales, por favor.</div>;
+        let suppliers = this.props.token ? <Button  clicked={this.updateSupplierHandler}> Actualizar proveedores </Button>: <Warning leDisp="yes"> Ingresar credenciales, por favor.</Warning>;
         if (this.state.suppliers){
             console.log(this.state.suppliers)
             suppliers = this.state.suppliers
@@ -130,12 +131,7 @@ const mapStateToProps = state => {
     }
 }
 
-/* const mapDispatchToProps = dispatch =>{
-    return{
-        onRetrieveSuppliers : (suppliers) => dispatch({type: "RETRIEVE_SUPPLIERS", suppliers: suppliers}),
-    }
-}
- */
+
 export default connect(mapStateToProps)(Suppliers);
 
 

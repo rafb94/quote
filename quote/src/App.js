@@ -24,16 +24,13 @@ class App extends Component {
     this.props.onTryAutoSignUp();
   }
 
-  showSideDrawerHandler = () => {
-    this.setState({showSideDrawer: !this.state.showSideDrawer})
-  }
-
+ 
  
   render() {    
     return (
       <BrowserRouter>
         <Aux>
-          <Menu showSideDrawer={this.state.showSideDrawer} clicked={this.showSideDrawerHandler}/>
+          <Menu showSideDrawer={this.state.showSideDrawer} />
           <Route path="/" exact render={() =>  <Cotizador leStyle={classes.Element} costList={this.state.cost}/>}/>
           <Route path="/productos" exact render={() =>  <NewItems leStyle={classes.Element} />}/>
           <Route path="/proveedores" exact render={() =>  <Suppliers leStyle={classes.Element}  />}/>

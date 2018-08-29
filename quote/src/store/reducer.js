@@ -9,7 +9,8 @@ const initialState =  {
     isAuth: false,
     token: null,
     userId: null,
-    error: null
+    error: null,
+    showSideDrawer: false
 }
 
 const reducer = (state = initialState, action) => {
@@ -69,6 +70,11 @@ const reducer = (state = initialState, action) => {
                 ...state,
                 token: null,
                 userId: null,
+            }
+        case "TOGGLE_SIDEDRAWER":
+            return{
+                ...state,
+                showSideDrawer: !state.showSideDrawer,
             }
         default:
             return state

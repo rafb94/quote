@@ -13,10 +13,10 @@ class Menu extends Component {
         
         return(
         <Aux>
-            <SideDrawer style={this.props.showSideDrawer}/>
+            <SideDrawer style={this.props.show}/>
             <div className={classes.Menu}> 
                 <div className={classes.TitleDiv}> <span className={classes.Title}>Cotizador</span> </div>
-                <div className={classes.MenuButton} onClick={this.props.clicked}>  Menu </div>
+                <div className={classes.MenuButton} onClick={this.props.onChange}>  Menu </div>
                 {this.props.token? <div className={classes.MenuButton} onClick={this.props.onLogout}>  Log out </div> : null} 
             </div>
         </Aux>
@@ -26,13 +26,15 @@ class Menu extends Component {
 
 const mapStateToProps = state => {
     return{
-        token: state.token
+        token: state.token,
+        show: state.showSideDrawer
     }
 }
 
 const mapDispatchToProps = dispatch =>{
     return{
-        onLogout:() => dispatch(actions.onLogout())
+        onLogout:() => dispatch(actions.onLogout()),
+        onChange: () => dispatch(actions.toggleSideDrawer())
     }
 }
 

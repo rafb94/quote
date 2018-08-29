@@ -28,6 +28,8 @@ class cost extends Component {
             .then(response => 
             this.setState({prices : response.data, loading: false}, console.log(response)));
         }
+
+        
         
     }
 
@@ -52,6 +54,13 @@ class cost extends Component {
        let suppliers = null;
 
        if (this.state.prices !== null){
+
+       
+        for (let i in this.state.prices){
+           if(i === "userId"){
+               delete this.state.prices[i] 
+           }
+        } 
 
             suppliers = Object.keys(this.state.prices)
             .map(
