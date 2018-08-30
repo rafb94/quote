@@ -6,7 +6,8 @@ import Button from '../../UI/Button/Button';
 import fire from '../../fire';
 import {connect} from 'react-redux';
 import Warning from '../../UI/Warning/Warning';
-import ButtonSuccess from '../../UI/ButtonSuccess/ButtonSuccess'
+import ButtonSuccess from '../../UI/ButtonSuccess/ButtonSuccess';
+import * as actions from '../../store/actions/index';
 
 class categories extends Component {
 
@@ -16,24 +17,31 @@ class categories extends Component {
         newCategory: null,
         showWarning: null,
         showSuccessDelete: false,
-        showSuccessAdd: false
+        showSuccessAdd: false,
+        showUpdateButton: true
     }
 
     componentDidMount() {
+
+       this.retrieveCategories();
+       
+    }
+
+    retrieveCategories = () => {
+        const queryParams = '?auth=' + this.props.token + '&orderBy="userId"&equalTo="' + this.props.userId + '"';
 
        function retrieveCategories(response) {
             return(Object.keys(response))
        }
 
-        axios.get('https://cotizador-92b14.firebaseio.com/itemPrices.json')
+         axios.get('https://cotizador-92b14.firebaseio.com/itemPrices.json'  + queryParams)
         .then(response => this.setState({categories : retrieveCategories(response.data)}))
 
-       
     }
 
     addCategoryHandler = (event) => {
         event.preventDefault();
-        fire.database().ref('itemPrices/').child(this.state.newCategory).set(this.props.userId);
+        fire.database().ref('itemPrices/').child(this.state.newCategory).child("userId").set(this.props.userId);
         
         let newCategory = this.state.newCategory.slice();
         this.state.categories.push(newCategory);
@@ -72,17 +80,30 @@ class categories extends Component {
         this.setState({newCategory: event.target.value})
     }
 
+    toggleUpdateHandler = () => {
+        this.retrieveCategories();
+        console.log(this.state.showUpdateButton)
+        let showUpdateButton = !this.state.showUpdateButton;
+        this.setState({showUpdateButton: showUpdateButton})
+    }
+
     render() {
         /* Retrieve current item categories */
-        let categories = (
+        /* let categories = (
             <Warning leDisp="yes"> 
             Por favor regístrate o ingresa tus datos en "Log In".
-        </Warning>);
-        this.state.categories && this.props.token? categories = this.state.categories.map(cat => <li onClick={() => this.showWarningDeleteHandler(cat)} key={cat} style={{display: "block"}}> {cat} {this.state.showWarning == cat? 
+        </Warning>); */
+       
+       let categories = this.props.token ? <Button  clicked={this.toggleUpdateHandler}> Actualizar proveedores </Button>: <Warning leDisp="yes"> Ingresar credenciales, por favor.</Warning>;
+        if(this.state.categories && this.props.token){
+            categories = this.state.categories.map(cat => <li onClick={() => 
+            this.showWarningDeleteHandler(cat)} key={cat} style={{display: "block"}}> {cat} 
+            {this.state.showWarning == cat? 
             <Button 
             clicked={() => this.deleteCategoryHandler(cat)}> Borrar permanentemente la categoría? Cuidado: Todos los items 
             de la categoría serán borrados.
-            </Button> : null }</li>) : null;
+                </Button> : null }</li>);
+        }
         
         
 
@@ -112,6 +133,7 @@ class categories extends Component {
         
 
         return (
+            
             <Aux>
                 <div className={this.props.leStyle}> <h1>Categorías actuales: </h1>
                         {categories} 
@@ -123,6 +145,7 @@ class categories extends Component {
                 
             </Aux>
         )
+        
     }
 }
 
@@ -133,5 +156,11 @@ const mapStateToProps = state => {
     }
 }
 
+const mapDispatchToProps = dispatch => {
+    return{
+        onTryAutoSignUp: () => dispatch(actions.authCheckState())
+    }
+}
 
-export default connect(mapStateToProps)(categories);
+
+export default connect(mapStateToProps, mapDispatchToProps)(categories);

@@ -11,6 +11,7 @@ import Auth from './containers/Auth/Auth';
 import Categories from './containers/Categories/Categories';
 import classes from './App.css';
 import * as actions from './store/actions/index';
+import fire from './fire';
 
 
 class App extends Component {
@@ -22,6 +23,13 @@ class App extends Component {
   
   componentDidMount() {
     this.props.onTryAutoSignUp();
+    fire.auth().onAuthStateChanged(firebaseUser => {
+      if(firebaseUser){
+        console.log(firebaseUser)
+      }else{
+        console.log("not logged in!")
+      }
+    })
   }
 
  
@@ -31,11 +39,11 @@ class App extends Component {
       <BrowserRouter>
         <Aux>
           <Menu showSideDrawer={this.state.showSideDrawer} />
-          <Route path="/" exact render={() =>  <Cotizador leStyle={classes.Element} costList={this.state.cost}/>}/>
-          <Route path="/productos" exact render={() =>  <NewItems leStyle={classes.Element} />}/>
-          <Route path="/proveedores" exact render={() =>  <Suppliers leStyle={classes.Element}  />}/>
-          <Route path="/auth" exact render={() =>  <Auth leStyle={classes.Element}/>}/>
-          <Route path="/categorias" exact render={() =>  <Categories leStyle={classes.Element}/>}/>
+          <Route path="/cotizador" exact render={(routeProps) =>  <Cotizador {...routeProps} leStyle={classes.Element} costList={this.state.cost}/>}/>
+          <Route path="/productos" exact render={(routeProps) =>  <NewItems {...routeProps} leStyle={classes.Element} />}/>
+          <Route path="/proveedores" exact render={(routeProps) =>  <Suppliers {...routeProps} leStyle={classes.Element}  />}/>
+          <Route path="/categorias" exact render={(routeProps) =>  <Categories {...routeProps} leStyle={classes.Element}/>}/>
+          <Route path="/" exact render={(routeProps) =>  <Auth {...routeProps} leStyle={classes.Element}/>}/>
         </Aux>
       </BrowserRouter>
     );

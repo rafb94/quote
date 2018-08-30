@@ -19,7 +19,9 @@ class item extends Component {
         }
     
     componentDidMount = () => {
-        axios.get('https://cotizador-92b14.firebaseio.com/itemPrices.json').then(response => {
+        const queryParams = '?auth=' + this.props.token + '&orderBy="userId"&equalTo="' + this.props.userId + '"';
+
+        axios.get('https://cotizador-92b14.firebaseio.com/itemPrices.json' + queryParams).then(response => {
             console.log(response.data)
             let itemClasses = Object.keys(response.data)
             this.setState({itemClasses: itemClasses, 
@@ -35,7 +37,9 @@ class item extends Component {
 
     showItemsOfClassHandler = () => {
         if (this.state.currentClass){
-            axios.get('https://cotizador-92b14.firebaseio.com/itemPrices.json').then(response => {
+            const queryParams = '?auth=' + this.props.token + '&orderBy="userId"&equalTo="' + this.props.userId + '"';
+
+            axios.get('https://cotizador-92b14.firebaseio.com/itemPrices.json' + queryParams).then(response => {
                 let currentClass = this.state.currentClass.slice();
                 console.log(response.data[currentClass])
                 
@@ -74,11 +78,12 @@ class item extends Component {
         } 
 
          /* Return a list with items of the current class, option tags */  
-         if (this.state.currentClass !== null){
+         if (this.state.currentClass !== null && this.state.items){
 
             let currentClass = this.state.currentClass.slice();
             let items = null;
 
+            console.log(this.state.items, currentClass)
             items = Object.keys(this.state.items[currentClass])
         
 
@@ -127,7 +132,9 @@ class item extends Component {
 const mapStateToProps = state =>{
     return{
         currentItem: state,
-        currentClass: state
+        currentClass: state,
+        token: state.token,
+        userId: state.userId
     }
 }
 

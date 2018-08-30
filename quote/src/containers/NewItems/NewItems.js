@@ -31,8 +31,8 @@ class newItem extends Component {
             return(responseArray)
         } 
 
-
-        axios.get('https://cotizador-92b14.firebaseio.com/Proveedores.json')
+        const queryParams = '?auth=' + this.props.token + '&orderBy="userId"&equalTo="' + this.props.userId + '"';
+        axios.get('https://cotizador-92b14.firebaseio.com/Proveedores.json' + queryParams)
         .then(response => {this.setState({suppliers:myLoop(response.data)})})
 
         
@@ -72,13 +72,14 @@ class newItem extends Component {
                     updatedPriceList[supplier] = price ;   
                 }
                 updatedPriceList["userId"] = this.props.userId
+                console.log(updatedPriceList)
                 return(updatedPriceList)
             }
         }
 
         
         
-
+        
         fire.database().ref('itemPrices/').child(this.props.currentClass)
         .child(this.state.newItem).set(updatePriceList());
       }
@@ -122,7 +123,7 @@ class newItem extends Component {
        let suppliers = <Spinner/>;
         if (this.state.suppliers){
             suppliers = this.state.suppliers
-            .map(sup => <Aux key={sup}> <Label>Precio {sup}: </Label> <Input leId={sup} leType="text" changed={(event) => 
+            .map(sup => <Aux key={sup}> <Label>Precio {sup}: </Label> <Input notRequired="true" leId={sup} leType="text" changed={(event) => 
                 this.itemPriceHandler(event, sup.replace(/ /g,'').toLowerCase())}/> </Aux>)
         } 
 
@@ -161,7 +162,8 @@ class newItem extends Component {
 const mapStateToProps = state => {
     return{
         currentClass: state.currentClass,
-        userId: state.userId
+        userId: state.userId,
+        token: state.token
     }
 }
 

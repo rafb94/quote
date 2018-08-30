@@ -4,6 +4,7 @@ import Label from '../../UI/Label/Label';
 import Input from '../../UI/Input/Input';
 import {connect} from 'react-redux';
 import * as actions from '../../store/actions/index';
+import fire from '../../fire';
 
 class auth extends Component {
 
@@ -25,7 +26,12 @@ class auth extends Component {
 
     submitHandler = (event) => {
         event.preventDefault();
+        fire.auth().signInWithEmailAndPassword(this.state.email, this.state.password).
+        then(response => console.log(response)).
+        catch(error => console.log("error authentication"))
         this.props.onAuth(this.state.email, this.state.password, this.state.login)
+        console.log(this.props)
+        this.props.history.push("/")
     }
 
     loginSignupHandler = () => {

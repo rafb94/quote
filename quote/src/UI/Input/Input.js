@@ -2,10 +2,10 @@ import React from 'react';
 import classes from './Input.css';
 
 
-const input = (props) => {
-
+const input = (props) => {let leRequired = props.noRequired? "required" : null
     return(<input 
-        required 
+        
+        required={props.notRequired? false: true}
         onChange={props.changed}  
         className={props.leType === "text"?classes.Input: classes.Button} 
         name={props.leName} 

@@ -14,7 +14,9 @@ class cotizador extends Component {
     }
 
     componentDidUpdate = () => {
-        axios.get("https://cotizador-92b14.firebaseio.com/currentItem.json")
+        const queryParams = '?auth=' + this.props.token + '&orderBy="userId"&equalTo="' + this.props.userId + '"';
+
+        axios.get("https://cotizador-92b14.firebaseio.com/currentItem.json" + queryParams)
         .then(response => this.setState({currentItem : response.data.currentItem}) )
        
     }

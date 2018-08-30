@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import axios from 'axios';
 import {connect} from 'react-redux';
-import Spinner from '../../UI/Spinner/Spinner';
 import classes from './Suppliers.css';
 import fire from '../../fire';
 import Button from '../../UI/Button/Button';
@@ -65,6 +64,7 @@ class Suppliers extends Component {
           }));
 
         this.setState({showAddSupplierButton: false})
+        document.getElementById("newSupplier").value = "";
     }
 
     showWarningDeleteHandler = (sup) => {
@@ -78,7 +78,12 @@ class Suppliers extends Component {
         fire.database().ref('Proveedores/').child(supplier)
         .set(null); 
 
-        this.setState({showSuccess: true})
+        /* let supplierIndex = this.state.suppliers.indexOf(sup)
+        this.state.suppliers[supplierIndex] = null;
+        console.log(this.state.suppliers) */
+        
+
+        this.setState({showSuccess: true, suppliers: null })
         setTimeout(()=> {this.setState({showSuccess: false})}, 2000)
         this.retrieveSuppliersHandler();
     }
@@ -111,7 +116,7 @@ class Suppliers extends Component {
                 <h4>Hacer click sobre proveedor que deseas eliminar </h4>
                 <ul style={{textAlign: "center", padding: 0}}> {suppliers} </ul>
                 <form onSubmit={this.setSupplierHandler}>
-                    <Input leName="newSupplier" leRef={(element) => { this.input = element }}/>
+                    <Input leId="newSupplier" leName="newSupplier" leRef={(element) => { this.input = element }}/>
                     <Input leType="submit" leValue="Añadir Proveedor Nuevo" /> 
                     {this.state.showAddSupplierButton? <Button className={classes.Button} clicked={this.addSupplierHandler}> 
                     Segur@? </Button> : null }

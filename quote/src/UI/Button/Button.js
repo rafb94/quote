@@ -3,7 +3,7 @@ import classes from './Button.css';
 
 const button = (props) => {
     return(
-        <button onClick={props.clicked} className={classes.Button}> {props.children} </button>
+        <button onClick={props.clicked} className={props.noDisp? classes.NoDisp : classes.Button}> {props.children} </button>
     )
 }
 

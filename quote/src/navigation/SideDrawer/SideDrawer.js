@@ -12,7 +12,7 @@ class SideDrawer extends Component{
         let loggedinLinks = (
             <Aux>
                 <Link  className={classes.Link} to="/categorias"> <div onClick={this.props.onChange}>Categorías de Producto</div></Link>
-                <Link className={classes.Link} to="/"> <div onClick={this.props.onChange}> Cotizador </div> </Link>
+                <Link className={classes.Link} to="/cotizador"> <div onClick={this.props.onChange}> Cotizador </div> </Link>
                 <Link  className={classes.Link} to="/productos"> <div onClick={this.props.onChange}> Productos </div> </Link>
                 <Link  className={classes.Link} to="/proveedores"> <div onClick={this.props.onChange}>Proveedores </div> </Link>
             </Aux>
@@ -20,7 +20,7 @@ class SideDrawer extends Component{
 
         return(
             <nav className={this.props.style ? classes.SideDrawer : classes.SideDrawerHide}>
-                <Link  className={classes.Link} to="/auth"> <div onClick={this.props.onChange}>Log In </div></Link>
+                <Link  className={classes.Link} to="/"> <div onClick={this.props.onChange}>Log In </div></Link>
                 {this.props.token? loggedinLinks : null}
                 
                

@@ -1,5 +1,6 @@
 import axios from 'axios';
 import * as actionTypes from './actionTypes';
+import fire from '../../fire';
 
 
 const authStart = (email, password) => {
@@ -26,6 +27,7 @@ export const authCheckState = () => {
             }
            
         }
+        
     }
 }
 
@@ -45,9 +47,15 @@ const authFail = (error) =>{
 }
 
 const checkAuthTimeout = (expirationDate) =>{
-    console.log(expirationDate * 1);
+    
     return dispatch => {
         setTimeout(() => {
+            if(expirationDate > 0){
+                console.log("hi from check")
+                let token = localStorage.getItem('token');
+                let userId = localStorage.getItem('userId')
+                dispatch(authSuccess(token, userId))
+            }
             dispatch(onLogout())
         }, expirationDate * 1000)
     }
@@ -79,13 +87,13 @@ export const onAuth = (email, password, login) => {
             localStorage.setItem('userId', response.data.localId);
             dispatch(authSuccess(response.data.idToken, response.data.localId));
             dispatch(checkAuthTimeout(response.data.expiresIn))
-            console.log(response)})
+           })
             .catch(err => authFail(err))
     }
 }
 
 export const onLogout = () => {
-    console.log("hi!")
+    fire.auth().signOut();  
     localStorage.removeItem('token');
     localStorage.removeItem('expirationDate');
     localStorage.removeItem('userId');
