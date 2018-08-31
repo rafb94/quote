@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import {connect} from 'react-redux'; 
 import Select from '../../UI/Select/Select';
+import fire from '../../fire';
 
 
 
@@ -19,7 +20,21 @@ class item extends Component {
         }
     
     componentDidMount = () => {
-        const queryParams = '?auth=' + this.props.token + '&orderBy="userId"&equalTo="' + this.props.userId + '"';
+
+        let ref = fire.database().ref("/itemPrices")
+
+        ref.once("value").then((snapshot => {
+            console.log(snapshot.val());
+            let itemClasses = Object.keys(snapshot.val())
+            this.setState({itemClasses: itemClasses, 
+              cost: snapshot.val(),
+              items: snapshot.val(), 
+              currentItemClass: "",
+            }) 
+            }))
+        
+        /* const queryParams = '?auth=' + this.props.token + '&orderBy="userId"&equalTo="' + this.props.userId + '"';
+
 
         axios.get('https://cotizador-92b14.firebaseio.com/itemPrices.json' + queryParams).then(response => {
             console.log(response.data)
@@ -32,7 +47,7 @@ class item extends Component {
         }).catch(error => {
             this.setState({error: true})
         }
-        )
+        ) */
     }
 
     showItemsOfClassHandler = () => {

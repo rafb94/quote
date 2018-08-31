@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import axios from 'axios';
 import Aux from '../../hoc/Auxiliar';
 import Input from '../../UI/Input/Input';
 import Button from '../../UI/Button/Button';
@@ -8,6 +7,7 @@ import {connect} from 'react-redux';
 import Warning from '../../UI/Warning/Warning';
 import ButtonSuccess from '../../UI/ButtonSuccess/ButtonSuccess';
 import * as actions from '../../store/actions/index';
+import Spinner from '../../UI/Spinner/Spinner';
 
 class categories extends Component {
 
@@ -28,14 +28,12 @@ class categories extends Component {
     }
 
     retrieveCategories = () => {
-        const queryParams = '?auth=' + this.props.token + '&orderBy="userId"&equalTo="' + this.props.userId + '"';
-
        function retrieveCategories(response) {
             return(Object.keys(response))
        }
 
-         axios.get('https://cotizador-92b14.firebaseio.com/itemPrices.json'  + queryParams)
-        .then(response => this.setState({categories : retrieveCategories(response.data)}))
+       fire.database().ref('/itemPrices').once('value')
+       .then(snapshot => this.setState({categories: retrieveCategories(snapshot.val())}))
 
     }
 
@@ -94,7 +92,7 @@ class categories extends Component {
             Por favor regístrate o ingresa tus datos en "Log In".
         </Warning>); */
        
-       let categories = this.props.token ? <Button  clicked={this.toggleUpdateHandler}> Actualizar proveedores </Button>: <Warning leDisp="yes"> Ingresar credenciales, por favor.</Warning>;
+       let categories = this.props.token ? <Spinner />: <Warning leDisp="yes"> Ingresar credenciales, por favor.</Warning>;
         if(this.state.categories && this.props.token){
             categories = this.state.categories.map(cat => <li onClick={() => 
             this.showWarningDeleteHandler(cat)} key={cat} style={{display: "block"}}> {cat} 

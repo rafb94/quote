@@ -1,11 +1,11 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux'; 
-import axios from 'axios';
 import Spinner from '../../UI/Spinner/Spinner';
 import Aux from '../../hoc/Auxiliar';
 import classes from './cost.css';
 import Button from '../../UI/Button/Button';
 import Input from '../../UI/Input/Input';
+import fire from '../../fire';
 
 class cost extends Component {
 
@@ -22,11 +22,11 @@ class cost extends Component {
 
         this.setState({loading: true})
 
-        if(this.props.currentClass.currentClass && this.props.currentItem.currentItem) {
-            axios.get('https://cotizador-92b14.firebaseio.com/itemPrices/' + this.props.currentClass.currentClass 
-            + "/" + this.props.currentItem.currentItem + ".json")
-            .then(response => 
-            this.setState({prices : response.data, loading: false}, console.log(response)));
+        if(this.props.currentClass && this.props.currentItem) {
+
+            fire.database().ref('itemPrices/' + this.props.currentClass 
+            + "/" + this.props.currentItem).once('value').then(response =>
+                this.setState({prices : response.val(), loading: false}))
         }
 
         
@@ -76,7 +76,7 @@ class cost extends Component {
         let currentClass = null;
     
         if (this.props.currentClass !== undefined){
-            currentClass = this.props.currentClass.currentClass
+            currentClass = this.props.currentClass
         
         }
 
@@ -84,7 +84,7 @@ class cost extends Component {
         let currentItem = null;
 
         if (this.props.currentItem !== null && this.props.currentItem !== undefined){
-            currentItem = this.props.currentItem.currentItem
+            currentItem = this.props.currentItem
         }
 
 
@@ -97,7 +97,7 @@ class cost extends Component {
         </Aux>
     )
 
-        if (this.state.loading){
+        if (this.state.loading && this.props.currentClass){
             priceList = <Spinner />
         }
         
@@ -124,8 +124,8 @@ class cost extends Component {
 
 const mapStateToProps = state =>{
     return{
-        currentItem: state,
-        currentClass: state
+        currentItem: state.currentItem,
+        currentClass: state.currentClass
     }
 }
 

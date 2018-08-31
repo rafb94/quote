@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import Item from '../../components/items/item';
 import Aux from '../../hoc/Auxiliar';
-import axios from 'axios';
 import Spinner from '../../UI/Spinner/Spinner';
 import {connect} from 'react-redux';
 import fire from '../../fire';
@@ -31,9 +30,15 @@ class newItem extends Component {
             return(responseArray)
         } 
 
-        const queryParams = '?auth=' + this.props.token + '&orderBy="userId"&equalTo="' + this.props.userId + '"';
+        let ref = fire.database().ref("/Proveedores")
+
+        ref.once("value").then((snapshot => {
+            this.setState({suppliers: myLoop(snapshot.val())})
+        }))
+       
+        /* const queryParams = '?auth=' + this.props.token + '&orderBy="userId"&equalTo="' + this.props.userId + '"';
         axios.get('https://cotizador-92b14.firebaseio.com/Proveedores.json' + queryParams)
-        .then(response => {this.setState({suppliers:myLoop(response.data)})})
+        .then(response => {this.setState({suppliers:myLoop(response.data)})}) */
 
         
     }
@@ -114,7 +119,7 @@ class newItem extends Component {
 
       /* Show warning if user is trying to add products without having selected a class */
 
-      let warning =  warning = <Warning leDisp={this.state.showWarning}> 
+      let warning = <Warning leDisp={this.state.showWarning}> 
                                     Por favor selecciona una categoría de producto o ingresa el nombre del artículo nuevo.
                                 </Warning>;
 

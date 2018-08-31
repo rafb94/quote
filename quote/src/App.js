@@ -12,6 +12,7 @@ import Categories from './containers/Categories/Categories';
 import classes from './App.css';
 import * as actions from './store/actions/index';
 import fire from './fire';
+import Customers from './containers/Customers/Customers';
 
 
 class App extends Component {
@@ -40,6 +41,7 @@ class App extends Component {
         <Aux>
           <Menu showSideDrawer={this.state.showSideDrawer} />
           <Route path="/cotizador" exact render={(routeProps) =>  <Cotizador {...routeProps} leStyle={classes.Element} costList={this.state.cost}/>}/>
+          <Route path="/clientes" exact render={(routeProps) =>  <Customers {...routeProps} leStyle={classes.Element}/>}/>
           <Route path="/productos" exact render={(routeProps) =>  <NewItems {...routeProps} leStyle={classes.Element} />}/>
           <Route path="/proveedores" exact render={(routeProps) =>  <Suppliers {...routeProps} leStyle={classes.Element}  />}/>
           <Route path="/categorias" exact render={(routeProps) =>  <Categories {...routeProps} leStyle={classes.Element}/>}/>

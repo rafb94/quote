@@ -11,8 +11,9 @@ class SideDrawer extends Component{
 
         let loggedinLinks = (
             <Aux>
-                <Link  className={classes.Link} to="/categorias"> <div onClick={this.props.onChange}>Categorías de Producto</div></Link>
                 <Link className={classes.Link} to="/cotizador"> <div onClick={this.props.onChange}> Cotizador </div> </Link>
+                <Link  className={classes.Link} to="/clientes"> <div onClick={this.props.onChange}>Clientes </div> </Link>
+                <Link  className={classes.Link} to="/categorias"> <div onClick={this.props.onChange}>Categorías de Producto</div></Link>
                 <Link  className={classes.Link} to="/productos"> <div onClick={this.props.onChange}> Productos </div> </Link>
                 <Link  className={classes.Link} to="/proveedores"> <div onClick={this.props.onChange}>Proveedores </div> </Link>
             </Aux>

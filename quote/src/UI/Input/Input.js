@@ -2,7 +2,7 @@ import React from 'react';
 import classes from './Input.css';
 
 
-const input = (props) => {let leRequired = props.noRequired? "required" : null
+const input = (props) => {
     return(<input 
         
         required={props.notRequired? false: true}
