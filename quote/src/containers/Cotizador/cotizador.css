@@ -14,3 +14,7 @@
     display: block;
     padding: 5%;
 }
+
+.SelectedCustomer{
+    color: red;
+}

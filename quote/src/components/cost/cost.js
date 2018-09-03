@@ -18,6 +18,16 @@ class cost extends Component {
         showMargin: false
     }
 
+    addQuotationHandler = () => {
+        console.log("hi!");
+
+        fire.database().ref('Clientes')
+        .child(this.props.currentCustomer)
+        .child(this.props.currentItem)
+        .child(new Date().getTime())
+        .set(this.state.currentQuotation);
+    }
+
     updatePriceHandler = ()  => {
 
         this.setState({loading: true})
@@ -37,7 +47,7 @@ class cost extends Component {
         this.setState({currentSupplier: sup, currentPrice: price})
     }
 
-    addQuotationHandler = (event) => {
+    analizeQuotationHandler = (event) => {
         this.setState({currentQuotation: event.target.value})
         console.log(event.target.value)
     }
@@ -111,9 +121,10 @@ class cost extends Component {
 
             
             <div className={this.props.leStyle}> 
-                    Cotización: <Input changed={this.addQuotationHandler}/> <br/>
+                    Cotización: <Input changed={this.analizeQuotationHandler}/> <br/>
                     <p> Margen: {this.state.showMargin? (((this.state.currentQuotation /this.state.currentPrice) - 1) * 100).toFixed(2) : null} %</p>
                     <Button clicked={this.showMarginHandler}> Analizar </Button> 
+                    <Button clicked={this.addQuotationHandler}> Añadir cotización</Button> 
             </div>
         </Aux>
        

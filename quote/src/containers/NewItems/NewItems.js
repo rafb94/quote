@@ -7,6 +7,8 @@ import fire from '../../fire';
 import Label from '../../UI/Label/Label';
 import Input from '../../UI/Input/Input';
 import Warning from '../../UI/Warning/Warning';
+import axios from 'axios';
+import Button from '../../UI/Button/Button';
 
 class newItem extends Component {
 
@@ -19,7 +21,17 @@ class newItem extends Component {
 
     componentWillMount () {
         
-        /* Retrieve supplier list from firebase */
+        this.retrieveSuppliersHandler();
+       
+        /* const queryParams = '?auth=' + this.props.token + '&orderBy="userId"&equalTo="' + this.props.userId + '"';
+        axios.get('https://cotizador-92b14.firebaseio.com/Proveedores.json' + queryParams)
+        .then(response => {this.setState({suppliers:myLoop(response.data)})}) */
+
+        
+    }
+
+
+    retrieveSuppliersHandler = () => {
 
         let responseArray = [];
 
@@ -32,15 +44,15 @@ class newItem extends Component {
 
         let ref = fire.database().ref("/Proveedores")
 
-        ref.once("value").then((snapshot => {
-            this.setState({suppliers: myLoop(snapshot.val())})
+        axios.get('https://cotizador-92b14.firebaseio.com/Proveedores.json' + this.props.queryParams)
+        .then((snapshot => {
+            this.setState({suppliers: myLoop(snapshot.data)})
+            console.log(snapshot.data)
         }))
-       
-        /* const queryParams = '?auth=' + this.props.token + '&orderBy="userId"&equalTo="' + this.props.userId + '"';
-        axios.get('https://cotizador-92b14.firebaseio.com/Proveedores.json' + queryParams)
-        .then(response => {this.setState({suppliers:myLoop(response.data)})}) */
 
-        
+        /* ref.once("value").then((snapshot => {
+            this.setState({suppliers: myLoop(snapshot.val())})
+        })) */
     }
 
     updateSupplierPriceListHandler = () =>{
@@ -125,8 +137,12 @@ class newItem extends Component {
 
        /*  Retrieve all suppliers */
 
-       let suppliers = <Spinner/>;
+       let suppliers = this.props.token ? <Button  clicked={this.retrieveSuppliersHandler}> 
+       Actualizar clientes </Button>: <Warning leDisp="yes"> Ingresar credenciales, por favor.</Warning>;
+
+       
         if (this.state.suppliers){
+            console.log(this.state.suppliers)
             suppliers = this.state.suppliers
             .map(sup => <Aux key={sup}> <Label>Precio {sup}: </Label> <Input notRequired="true" leId={sup} leType="text" changed={(event) => 
                 this.itemPriceHandler(event, sup.replace(/ /g,'').toLowerCase())}/> </Aux>)
@@ -168,7 +184,8 @@ const mapStateToProps = state => {
     return{
         currentClass: state.currentClass,
         userId: state.userId,
-        token: state.token
+        token: state.token,
+        queryParams: state.queryParams
     }
 }
 

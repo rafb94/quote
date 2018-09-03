@@ -1,0 +1,16 @@
+.Hide{
+    color: white;
+}
+
+.NoDisplay{
+    display: none;
+}
+
+.CenterElement{
+    margin: auto;
+    border-collapse: collapse;
+}
+
+.Row{
+    border-bottom: 1px solid #4093EC !important;
+}

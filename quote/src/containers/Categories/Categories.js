@@ -8,6 +8,7 @@ import Warning from '../../UI/Warning/Warning';
 import ButtonSuccess from '../../UI/ButtonSuccess/ButtonSuccess';
 import * as actions from '../../store/actions/index';
 import Spinner from '../../UI/Spinner/Spinner';
+import axios from 'axios';
 
 class categories extends Component {
 
@@ -32,8 +33,10 @@ class categories extends Component {
             return(Object.keys(response))
        }
 
-       fire.database().ref('/itemPrices').once('value')
-       .then(snapshot => this.setState({categories: retrieveCategories(snapshot.val())}))
+       axios.get('https://cotizador-92b14.firebaseio.com/itemPrices.json' + this.props.queryParams)
+        .then(snapshot => this.setState({categories: retrieveCategories(snapshot.data)}))
+
+      
 
     }
 
@@ -92,7 +95,8 @@ class categories extends Component {
             Por favor regístrate o ingresa tus datos en "Log In".
         </Warning>); */
        
-       let categories = this.props.token ? <Spinner />: <Warning leDisp="yes"> Ingresar credenciales, por favor.</Warning>;
+       let categories = this.props.token ? <Button  clicked={this.retrieveCategories }> 
+       Actualizar categorías </Button>: <Warning leDisp="yes"> Ingresar credenciales, por favor.</Warning>;
         if(this.state.categories && this.props.token){
             categories = this.state.categories.map(cat => <li onClick={() => 
             this.showWarningDeleteHandler(cat)} key={cat} style={{display: "block"}}> {cat} 
@@ -150,7 +154,8 @@ class categories extends Component {
 const mapStateToProps = state => {
     return{
         userId: state.userId,
-        token: state.token
+        token: state.token,
+        queryParams: state.queryParams
     }
 }
 

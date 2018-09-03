@@ -10,7 +10,8 @@ const initialState =  {
     token: null,
     userId: null,
     error: null,
-    showSideDrawer: false
+    showSideDrawer: false,
+    queryParams: null
 }
 
 const reducer = (state = initialState, action) => {
@@ -24,19 +25,6 @@ const reducer = (state = initialState, action) => {
                 currentItem: action.valueItem
             }
         case "UPDATE_CLASS":
-            if (action.valueClass !== null){ 
-                switch (action.valueClass) {
-                    case "ReactivosCalientes":
-                        action.valueClass= "ReactivosCalientes";
-                            break;
-                    case "ReactivosFrios":
-                        action.valueClass= "ReactivosFrios";
-                        break;
-                    default:
-                        action.valueClass= action.valueClass;
-                
-                }   
-            }
             return{ 
                 ...state,
                 currentClass: action.valueClass
@@ -57,7 +45,8 @@ const reducer = (state = initialState, action) => {
             return{
                 ...state,
                 token: action.token,
-                userId: action.userId
+                userId: action.userId,
+                queryParams: '?auth=' + action.token + '&orderBy="userId"&equalTo="' + action.userId + '"'
             }
         case actionTypes.AUTH_FAIL:
             console.log("hi!")

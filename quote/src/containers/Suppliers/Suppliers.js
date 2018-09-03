@@ -26,8 +26,7 @@ class Suppliers extends Component {
     }
 
     retrieveSuppliersHandler = (token, userId) => {
-        let responseArray = [];
-        const queryParams = '?auth=' + token + '&orderBy="userId"&equalTo="' + userId + '"'; 
+        let responseArray = []; 
 
         const myLoop = (response) => {
             for(let i = 0; i < Object.keys(response).length; i++){
@@ -37,8 +36,7 @@ class Suppliers extends Component {
             return(responseArray)
         } 
 
-
-        axios.get('https://cotizador-92b14.firebaseio.com/Proveedores.json' + queryParams)
+        axios.get('https://cotizador-92b14.firebaseio.com/Proveedores.json' + this.props.queryParams)
         .then(response => {this.setState({suppliers: myLoop(response.data)})}).catch(error => this.setState({error: error}))
 
        
@@ -132,7 +130,8 @@ const mapStateToProps = state => {
     return{
         suppliers: state,
         userId: state.userId,
-        token: state.token
+        token: state.token,
+        queryParams: state.queryParams
     }
 }
 
