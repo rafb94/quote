@@ -17,7 +17,8 @@ class Suppliers extends Component {
         suppliers: null,
         deletedSupplier: null,
         showWarning: false,
-        showSuccess: false
+        showSuccessAdd: false,
+        showSuccessDelete: false,
     }
 
     componentDidMount () {
@@ -59,10 +60,22 @@ class Suppliers extends Component {
             "userId": userId
         },  this.setState((prevState) => {
             return {suppliers: prevState.suppliers.concat(supplierName)}
-          }));
+          })).then(
+                this.showSuccessAddButtonHandler()
+          );
 
         this.setState({showAddSupplierButton: false})
         document.getElementById("newSupplier").value = "";
+    }
+
+    showSuccessAddButtonHandler = () => {
+        this.setState({
+            showSuccessAdd: true
+        })
+
+        setTimeout(() => {
+            this.setState({showSuccessAdd: false})
+        }, 1500)
     }
 
     showWarningDeleteHandler = (sup) => {
@@ -118,7 +131,8 @@ class Suppliers extends Component {
                     <Input leType="submit" leValue="Añadir Proveedor Nuevo" /> 
                     {this.state.showAddSupplierButton? <Button className={classes.Button} clicked={this.addSupplierHandler}> 
                     Segur@? </Button> : null }
-                    <ButtonSuccess leClass={this.state.showSuccess} > Proveedor borrado! </ButtonSuccess> 
+                    <ButtonSuccess leClass={this.state.showSuccessDelete} > Proveedor borrado! </ButtonSuccess>
+                    <ButtonSuccess leClass={this.state.showSuccessAdd} > Proveedor añadido! </ButtonSuccess> 
                 </form>
                 
             </div>

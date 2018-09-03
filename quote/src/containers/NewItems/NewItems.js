@@ -9,6 +9,7 @@ import Input from '../../UI/Input/Input';
 import Warning from '../../UI/Warning/Warning';
 import axios from 'axios';
 import Button from '../../UI/Button/Button';
+import ButtonSuccess from '../../UI/ButtonSuccess/ButtonSuccess';
 
 class newItem extends Component {
 
@@ -16,7 +17,9 @@ class newItem extends Component {
         suppliers: null,
         precios : null,
         newItem: null,
-        showWarning: false
+        showWarning: false,
+        showSuccess: false,
+        newPriceState: null
     }
 
     componentWillMount () {
@@ -32,6 +35,7 @@ class newItem extends Component {
 
 
     retrieveSuppliersHandler = () => {
+    
 
         let responseArray = [];
 
@@ -42,12 +46,12 @@ class newItem extends Component {
             return(responseArray)
         } 
 
-        let ref = fire.database().ref("/Proveedores")
+        
 
         axios.get('https://cotizador-92b14.firebaseio.com/Proveedores.json' + this.props.queryParams)
         .then((snapshot => {
             this.setState({suppliers: myLoop(snapshot.data)})
-            console.log(snapshot.data)
+            console.log(snapshot)
         }))
 
         /* ref.once("value").then((snapshot => {
@@ -83,10 +87,9 @@ class newItem extends Component {
 
                     if(this.state.precios[supplier]){
                         price = this.state.precios[supplier]
-                        console.log(price)
                     }
                     
-                    updatedPriceList[supplier] = price ;   
+                    updatedPriceList[supplier] = {[new Date().getTime()]: price} ;   
                 }
                 updatedPriceList["userId"] = this.props.userId
                 console.log(updatedPriceList)
@@ -95,11 +98,25 @@ class newItem extends Component {
         }
 
         
+        if (this.state.suppliers && this.state.precios) {
+
+            fire.database().ref('Productos/').child(this.state.newItem).set({
+                category: this.props.currentClass,
+                userId: this.props.userId,
+                quotations: updatePriceList()
+            })
+
+
+            /* fire.database().ref('itemPrices/').child(this.props.currentClass)
+            .child(this.state.newItem).set(updatePriceList()).then(this.showSuccessHandler())
+            .catch(error => console.log(error));
+        } else{
+            this.setState({showWarning: true})
+        } */
+
         
-        
-        fire.database().ref('itemPrices/').child(this.props.currentClass)
-        .child(this.state.newItem).set(updatePriceList());
       }
+    }
 
     itemPriceHandler = (event, supplier) => {
         if(!this.props.currentClass){
@@ -110,7 +127,7 @@ class newItem extends Component {
             this.setState({showWarning: false})
             const newPriceState = this.state.precios
             newPriceState[supplier] = event.target.value
-            this.setState({newPriceState})
+            this.setState({newPriceState: newPriceState})
         }
        
     }
@@ -126,19 +143,27 @@ class newItem extends Component {
         
     }
 
+    showSuccessHandler = () => {
+        this.setState({showSuccess: true})
+
+        setTimeout(() =>{
+            this.setState({showSuccess: false})
+        }, 2000)
+    }
+
 
     render(){
 
       /* Show warning if user is trying to add products without having selected a class */
 
       let warning = <Warning leDisp={this.state.showWarning}> 
-                                    Por favor selecciona una categoría de producto o ingresa el nombre del artículo nuevo.
-                                </Warning>;
+                        Por favor selecciona una categoría de producto o ingresa el nombre del artículo nuevo.
+                    </Warning>;
 
        /*  Retrieve all suppliers */
 
        let suppliers = this.props.token ? <Button  clicked={this.retrieveSuppliersHandler}> 
-       Actualizar clientes </Button>: <Warning leDisp="yes"> Ingresar credenciales, por favor.</Warning>;
+       Actualizar proveedores </Button>: <Warning leDisp="yes"> Ingresar credenciales, por favor.</Warning>;
 
        
         if (this.state.suppliers){
@@ -155,6 +180,14 @@ class newItem extends Component {
             item =  <Item clicked={this.updateSupplierPriceListHandler} leStyle={this.props.leStyle} list={this.props.itemClasses} dispProductList="Nope"/>
         }
 
+       /*  Show success button when item has been added */
+
+       let success = null;
+
+       if(this.state.showSuccess){
+           success = <ButtonSuccess leClass="yes"> Producto añadido! </ButtonSuccess>
+       }
+
         return(
         <Aux>
             <div className={this.props.leStyle}>
@@ -170,10 +203,10 @@ class newItem extends Component {
                     <Input leId="newItemInput" leType="text" changed={this.itemSetHandler}/> 
                     <Input leType="submit" leValue="Añadir item" />
                     {warning}
-                    <br/><br/>
-                    {suppliers} 
-                    
+                    {success}
+                    <br/><br/>                    
                 </form>
+                {suppliers} 
            </div>
         </Aux>
         )

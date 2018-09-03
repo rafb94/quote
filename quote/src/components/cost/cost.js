@@ -28,14 +28,13 @@ class cost extends Component {
         .set(this.state.currentQuotation);
     }
 
-    updatePriceHandler = ()  => {
+    retrievePricesHandler = ()  => {
 
         this.setState({loading: true})
 
         if(this.props.currentClass && this.props.currentItem) {
 
-            fire.database().ref('itemPrices/' + this.props.currentClass 
-            + "/" + this.props.currentItem).once('value').then(response =>
+            fire.database().ref('Productos/' + this.props.currentItem).child('quotations').once('value').then(response =>
                 this.setState({prices : response.val(), loading: false}))
         }
 
@@ -103,7 +102,7 @@ class cost extends Component {
         let priceList = (
         <Aux>
             <div style={{textAlign: "center"}}> {suppliers} </div>
-            <Button clicked={this.updatePriceHandler}> Actualizar Precios </Button>
+            <Button clicked={this.retrievePricesHandler}> Actualizar Precios </Button>
         </Aux>
     )
 

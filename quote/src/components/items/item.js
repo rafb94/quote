@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import {connect} from 'react-redux'; 
 import Select from '../../UI/Select/Select';
-import fire from '../../fire';
+import Button from '../../UI/Button/Button';
 
 
 
@@ -11,7 +11,6 @@ class item extends Component {
     state={
         newItem: "",
         items: null,
-        cost: null,
         itemClasses: null,
         error: false,
         itemDetail: null,
@@ -20,56 +19,48 @@ class item extends Component {
         }
     
     componentDidMount = () => {
+            this.retrieveCategoriesHandler()
+       
+    }
 
-        let ref = fire.database().ref("/itemPrices")
-
-        ref.once("value").then((snapshot => {
-            console.log(snapshot.val());
-            let itemClasses = Object.keys(snapshot.val())
-            this.setState({itemClasses: itemClasses, 
-              cost: snapshot.val(),
-              items: snapshot.val(), 
-              currentItemClass: "",
-            }) 
-            }))
-        
-        /* const queryParams = '?auth=' + this.props.token + '&orderBy="userId"&equalTo="' + this.props.userId + '"';
-
-
-        axios.get('https://cotizador-92b14.firebaseio.com/itemPrices.json' + queryParams).then(response => {
+    retrieveCategoriesHandler = () => {
+        axios.get('https://cotizador-92b14.firebaseio.com/Categorias.json' + this.props.queryParams).then(response => {
             console.log(response.data)
             let itemClasses = Object.keys(response.data)
             this.setState({itemClasses: itemClasses, 
-              cost: response.data,
-              items: response.data, 
               currentItemClass: "",
             }) 
         }).catch(error => {
             this.setState({error: true})
         }
-        ) */
+        )
     }
 
-    showItemsOfClassHandler = () => {
-        if (this.state.currentClass){
-            const queryParams = '?auth=' + this.props.token + '&orderBy="userId"&equalTo="' + this.props.userId + '"';
+    showItemsOfClassHandler = (myClass) => {
 
-            axios.get('https://cotizador-92b14.firebaseio.com/itemPrices.json' + queryParams).then(response => {
-                let currentClass = this.state.currentClass.slice();
-                console.log(response.data[currentClass])
-                
-            }).catch(error => {
+            let queryParams = '?auth=' + this.props.token + '&orderBy="category"&equalTo="' + myClass + '"'
+
+            axios.get('https://cotizador-92b14.firebaseio.com/Productos.json' + queryParams).then(
+                response=> {
+                console.log(Object.keys(response.data))
+                this.setState({items: Object.keys(response.data)})
+            })
+            .catch(error => console.log(error))
+            
+            /* axios.get('https://cotizador-92b14.firebaseio.com/Productos.json' + this.props.queryParams)
+            .then(response => console.log(response.data)).catch(error => {
+                console.log(error)
                 this.setState({error: true})
             }
-            )  
-        }
+            )   */
     }
+    
         
     classUpdateHandler = (event) => {
-     
+        console.log("hi!")
         this.setState({currentClass: event.target.value})
         this.props.onUpdateClass(event)
-        this.showItemsOfClassHandler();
+        this.showItemsOfClassHandler(event.target.value);
     }
 
     
@@ -85,26 +76,27 @@ class item extends Component {
        
         /* Return a list with item classes, option tags */
         if (this.state.itemClasses !== null){
-            list= this.state.itemClasses.map(itemClass =>{  
-                return (
-                <option key={itemClass}> {itemClass}</option>
-            ) 
-            })
+            
+            let listClasses = this.state.itemClasses.map(itemClass =><option key={itemClass}> {itemClass}</option>)
+
+            console.log(listClasses)
+
+            list=  (
+            <Select clicked={this.props.clicked} changed={this.classUpdateHandler} default="default">
+                <option key="default" value="default" disabled> Tipo de Producto</option>
+                {listClasses}
+            </Select> 
+            )
+        } else{
+            list= <Button clicked={this.retrieveCategoriesHandler}> Actualizar categorías</Button> 
         } 
 
-         /* Return a list with items of the current class, option tags */  
+         /* Return a list with items of the current class, option tags */
+         let items = null;
+
          if (this.state.currentClass !== null && this.state.items){
-
-            let currentClass = this.state.currentClass.slice();
-            let items = null;
-
-            console.log(this.state.items, currentClass)
-            items = Object.keys(this.state.items[currentClass])
-        
-
-            console.log(items)
-            
-            itemDetail= items.map(num =>{  
+            console.log(this.state.items)
+            itemDetail= this.state.items.map(num =>{  
                 return (<option key={num}> {num}</option>) 
             })
            
@@ -118,20 +110,17 @@ class item extends Component {
             {/* Select Tag for item classes */}
 
                 <div >
-                    <Select clicked={this.props.clicked} changed={this.classUpdateHandler} default="default">
-                        <option key="default" value="default" disabled> Tipo de Producto</option>
-                        {list}
-                    </Select> 
+                   {list}
                 </div>
                 <br/>
 
             {/* Select Tag for items: */}
 
                 <div style={this.props.dispProductList ? {display: 'none'} : null}>
-                    <Select clicked={this.props.clicked} changed={this.props.onUpdateItem} default="default">
+                   { <Select clicked={this.props.clicked} changed={this.props.onUpdateItem} default="default">
                         <option key="default" value="default" disabled>  Producto</option>
                         {itemDetail} 
-                    </Select> 
+                    </Select> }
                 </div>
                 <br/>
 
@@ -149,7 +138,8 @@ const mapStateToProps = state =>{
         currentItem: state,
         currentClass: state,
         token: state.token,
-        userId: state.userId
+        userId: state.userId,
+        queryParams: state.queryParams
     }
 }
 

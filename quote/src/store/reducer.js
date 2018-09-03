@@ -41,7 +41,6 @@ const reducer = (state = initialState, action) => {
                 password: action.password
             }
         case "AUTH_SUCCESS":
-        console.log(action.userId)
             return{
                 ...state,
                 token: action.token,
@@ -49,7 +48,6 @@ const reducer = (state = initialState, action) => {
                 queryParams: '?auth=' + action.token + '&orderBy="userId"&equalTo="' + action.userId + '"'
             }
         case actionTypes.AUTH_FAIL:
-            console.log("hi!")
             return{
                 ...state,
                 error: action.error

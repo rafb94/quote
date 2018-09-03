@@ -42,7 +42,11 @@ class categories extends Component {
 
     addCategoryHandler = (event) => {
         event.preventDefault();
-        fire.database().ref('itemPrices/').child(this.state.newCategory).child("userId").set(this.props.userId);
+        /* fire.database().ref('itemPrices/').child(this.state.newCategory).child("userId").set(this.props.userId); */
+
+        fire.database().ref('Categorias/').child(this.state.newCategory).child("userId").set(this.props.userId);
+
+        
         
         let newCategory = this.state.newCategory.slice();
         this.state.categories.push(newCategory);
