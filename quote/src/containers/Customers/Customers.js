@@ -45,7 +45,7 @@ class Customers extends Component {
     }
 
     deleteClientHandler = (cust) => {
-        fire.database().ref('Clientes').child(cust).set(null).then(
+        fire.database().ref(this.props.userId).child('Clientes').child(cust).set(null).then(
             this.confirmClientDeletedHandler(cust)
         );
     }
@@ -55,8 +55,9 @@ class Customers extends Component {
       /*   fire.database().ref('Clientes').once('value').then(response => this.setState({
             customers: Object.keys(response.val())})) */
 
-        axios.get('https://cotizador-92b14.firebaseio.com/Clientes.json' + this.props.queryParams)
-        .then(response => this.setState({customers: Object.keys(response.data)}))
+        axios.get('https://cotizador-92b14.firebaseio.com/' + this.props.userId + '/Clientes.json' + this.props.queryParams)
+        .then(response => {this.setState({customers: Object.keys(response.data)})
+    console.log(response)})
     }
 
     addClientHandler = (event) => {
@@ -64,8 +65,7 @@ class Customers extends Component {
 
         if(this.props.userId){
             
-            fire.database().ref('Clientes').child(this.state.newClient).set({
-                userId: this.props.userId,
+            fire.database().ref(this.props.userId).child('Clientes').child(this.state.newClient).set({
                 name: this.state.newClient
             }).then(this.showSuccessHandler(this.state.newClient)).catch(error => console.log(error))
 
@@ -112,7 +112,7 @@ class Customers extends Component {
 
     retrievePricelistHandler = (cust) => {
 
-        fire.database().ref('Clientes').once('value').then(response => {
+        fire.database().ref(this.props.userId).child('Clientes').once('value').then(response => {
             let myPriceList = response.val()[cust]
             let myPriceObject = {}
             for (let i in myPriceList){

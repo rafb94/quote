@@ -24,13 +24,14 @@ class cotizador extends Component {
         
 
         this.retrieveCustomersHandler();
-        console.log(this.state.customers)
+        console.log(this.props.userId)
        
     }
 
     retrieveCustomersHandler = () => {
 
-        axios.get("https://cotizador-92b14.firebaseio.com/Clientes.json" + this.props.queryParams)
+        axios.get("https://cotizador-92b14.firebaseio.com/" + this.props.userId 
+        + "/Clientes.json" + this.props.queryParams)
         .then(response => this.setState({
             customers: Object.keys(response.data)})) 
 
@@ -88,10 +89,10 @@ class cotizador extends Component {
                     {customers}
                 </div>
 
-                
+                 
                 {item}
                 <Cost leStyle={this.props.leStyle} myvalue={this.state.currentItem} 
-                currentCustomer={this.state.currentCustomer}/> 
+                currentCustomer={this.state.currentCustomer} userId={this.props.userId}/> 
 
                 
             </Aux>
@@ -104,6 +105,7 @@ class cotizador extends Component {
 
 const mapStateToProps = state => {
     return{
+        userId: state.userId,
         token: state.token,
         queryParams: state.queryParams
     }

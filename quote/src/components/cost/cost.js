@@ -6,6 +6,7 @@ import classes from './cost.css';
 import Button from '../../UI/Button/Button';
 import Input from '../../UI/Input/Input';
 import fire from '../../fire';
+import classNames from 'classnames';
 
 class cost extends Component {
 
@@ -19,9 +20,9 @@ class cost extends Component {
     }
 
     addQuotationHandler = () => {
-        console.log("hi!");
 
-        fire.database().ref('Clientes')
+        fire.database().ref(this.props.userId)
+        .child('Clientes')
         .child(this.props.currentCustomer)
         .child(this.props.currentItem)
         .child(new Date().getTime())
@@ -34,7 +35,9 @@ class cost extends Component {
 
         if(this.props.currentClass && this.props.currentItem) {
 
-            fire.database().ref('Productos/' + this.props.currentItem).child('quotations').once('value').then(response =>
+            fire.database().ref(this.props.userId)
+            .child('Productos/' + this.props.currentItem)
+            .child('quotations').once('value').then(response =>
                 this.setState({prices : response.val(), loading: false}))
         }
 
@@ -42,8 +45,8 @@ class cost extends Component {
         
     }
 
-    supplierSelectedHandler = (sup, price) => {
-        this.setState({currentSupplier: sup, currentPrice: price})
+    supplierSelectedHandler = (sup, price, date) => {
+        this.setState({currentSupplier: sup, currentPrice: price, currentQuotationDate: date})
     }
 
     analizeQuotationHandler = (event) => {
@@ -60,25 +63,38 @@ class cost extends Component {
 
        /*  Retrieve list of suppliers that quoted the product */
 
-       let suppliers = null;
+       let suppliers = [];
 
-       if (this.state.prices !== null){
+       if (this.state.prices){
+           let mysuppliers = [];
+           console.log(this.state.prices)
+            for (let i in this.state.prices){
+                if(i !== "userId"){
+                    mysuppliers.push(i)
 
-       
-        for (let i in this.state.prices){
-           if(i === "userId"){
-               delete this.state.prices[i] 
-           }
-        } 
-
-            suppliers = Object.keys(this.state.prices)
-            .map(
-                sup => <div className={this.state.currentSupplier === sup? classes.SelectedSupplier : null} 
-                key={sup} onClick={() => this.supplierSelectedHandler(sup, this.state.prices[sup])}> 
-                {sup}: {this.state.prices[sup]}
-                </div>)
+                    for (let y in this.state.prices[i]){
+                        let keyEl = 0;
+                        suppliers.push(
+                            <tr 
+                            className={
+                            classNames(this.state.currentSupplier === i 
+                                && this.state.currentQuotationDate  === parseInt(y)? classes.SelectedSupplier : null,
+                                classes.Row)} 
+                            key={parseInt(y)} 
+                            onClick={() => this.supplierSelectedHandler(i, this.state.prices[i][y], parseInt(y))}> 
+                                <td>{i}</td> 
+                                <td> {new Intl.DateTimeFormat('en-GB')
+                                .format(new Date(parseInt(y)))}</td>
+                                <td> {this.state.prices[i][y]}</td>
+                            </tr>   
+                        )
+                        keyEl++;
+                        
+                    }
+                }
+            }
+            console.log(mysuppliers)
        }
-
 
 
         /*  Retrieve the current active item class from redux */
@@ -99,15 +115,32 @@ class cost extends Component {
 
         /* Show loading spinner or actual data (supplier prices) */
 
-        let priceList = (
-        <Aux>
-            <div style={{textAlign: "center"}}> {suppliers} </div>
-            <Button clicked={this.retrievePricesHandler}> Actualizar Precios </Button>
-        </Aux>
-    )
+        let quotationsList = null;
+
+        if (this.state.prices){
+            quotationsList = (
+                <Aux>
+                    <h2> Lista de Cotizaciones </h2>
+                    <h3> Cliente: {this.state.showPriceListButton} </h3>
+                    <table className={classes.CenterElement}>
+                        <thead> 
+                            <tr className={classes.Row}>
+                                <th> Proveedor <span className={classes.Hide}> .</span></th>
+                                <th>Fecha <span className={classes.Hide}> .</span></th>
+                                <th> Cotización <span className={classes.Hide}> .</span></th>
+                            </tr>
+                        </thead>
+        
+                        <tbody>
+                            {suppliers} 
+                        </tbody>
+                    </table>
+                </Aux>
+            )
+        }
 
         if (this.state.loading && this.props.currentClass){
-            priceList = <Spinner />
+            quotationsList = <Spinner />
         }
         
 
@@ -115,7 +148,8 @@ class cost extends Component {
         <Aux>
             <div className={this.props.leStyle}>
                 <h3 style={{color: "#01015B"}}>Precio Proveedor: {currentItem} {currentClass}</h3>
-                    {priceList}
+                    {quotationsList}
+                    <Button clicked={this.retrievePricesHandler}> Actualizar Precios </Button>
             </div>
 
             

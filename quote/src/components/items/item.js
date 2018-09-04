@@ -24,7 +24,8 @@ class item extends Component {
     }
 
     retrieveCategoriesHandler = () => {
-        axios.get('https://cotizador-92b14.firebaseio.com/Categorias.json' + this.props.queryParams).then(response => {
+        axios.get('https://cotizador-92b14.firebaseio.com/' + this.props.userId + '/Categorias.json' 
+        + this.props.queryParams).then(response => {
             console.log(response.data)
             let itemClasses = Object.keys(response.data)
             this.setState({itemClasses: itemClasses, 
@@ -40,7 +41,8 @@ class item extends Component {
 
             let queryParams = '?auth=' + this.props.token + '&orderBy="category"&equalTo="' + myClass + '"'
 
-            axios.get('https://cotizador-92b14.firebaseio.com/Productos.json' + queryParams).then(
+            axios.get('https://cotizador-92b14.firebaseio.com/' + this.props.userId 
+            + '/Productos.json' + queryParams).then(
                 response=> {
                 console.log(Object.keys(response.data))
                 this.setState({items: Object.keys(response.data)})

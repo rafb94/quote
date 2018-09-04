@@ -45,7 +45,8 @@ const reducer = (state = initialState, action) => {
                 ...state,
                 token: action.token,
                 userId: action.userId,
-                queryParams: '?auth=' + action.token + '&orderBy="userId"&equalTo="' + action.userId + '"'
+                queryParams: '?auth=' + action.token,
+               /*  + '&orderBy="userId"&equalTo="' + action.userId + '"' */
             }
         case actionTypes.AUTH_FAIL:
             return{

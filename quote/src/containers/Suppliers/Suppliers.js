@@ -26,7 +26,7 @@ class Suppliers extends Component {
         console.log(this.state.suppliers)
     }
 
-    retrieveSuppliersHandler = (token, userId) => {
+    retrieveSuppliersHandler = () => {
         let responseArray = []; 
 
         const myLoop = (response) => {
@@ -37,8 +37,10 @@ class Suppliers extends Component {
             return(responseArray)
         } 
 
-        axios.get('https://cotizador-92b14.firebaseio.com/Proveedores.json' + this.props.queryParams)
-        .then(response => {this.setState({suppliers: myLoop(response.data)})}).catch(error => this.setState({error: error}))
+        axios.get('https://cotizador-92b14.firebaseio.com/' + this.props.userId + '/Proveedores.json'
+         + this.props.queryParams)
+        .then(response => {this.setState({suppliers: myLoop(response.data)})})
+        .catch(error => this.setState({error: error}))
 
        
 
@@ -54,7 +56,7 @@ class Suppliers extends Component {
         event.preventDefault()
         const supplierName = this.state.newSupplier.slice()
         const userId = this.props.userId;
-        fire.database().ref('Proveedores/').child(this.state.newSupplier.replace(/ /g,'').toLowerCase())
+        fire.database().ref(this.props.userId).child('Proveedores/').child(this.state.newSupplier.replace(/ /g,'').toLowerCase())
         .set({
             "supplier": supplierName,
             "userId": userId
@@ -86,7 +88,7 @@ class Suppliers extends Component {
     deleteSupplierHandler = (sup) =>{
 
         let supplier = sup.replace(/ /g,'').toLowerCase()
-        fire.database().ref('Proveedores/').child(supplier)
+        fire.database().ref(this.props.userId).child('Proveedores/').child(supplier)
         .set(null); 
 
         /* let supplierIndex = this.state.suppliers.indexOf(sup)

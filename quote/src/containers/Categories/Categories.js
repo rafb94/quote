@@ -33,7 +33,7 @@ class categories extends Component {
             return(Object.keys(response))
        }
 
-       axios.get('https://cotizador-92b14.firebaseio.com/itemPrices.json' + this.props.queryParams)
+       axios.get('https://cotizador-92b14.firebaseio.com/' + this.props.userId + '/Categorias.json' + this.props.queryParams)
         .then(snapshot => this.setState({categories: retrieveCategories(snapshot.data)}))
 
       
@@ -44,7 +44,8 @@ class categories extends Component {
         event.preventDefault();
         /* fire.database().ref('itemPrices/').child(this.state.newCategory).child("userId").set(this.props.userId); */
 
-        fire.database().ref('Categorias/').child(this.state.newCategory).child("userId").set(this.props.userId);
+        fire.database().ref(this.props.userId).child('Categorias/').child(this.state.newCategory)
+        .child("userId").set(this.props.userId);
 
         
         
@@ -54,11 +55,12 @@ class categories extends Component {
 
         this.setState({showSuccessAdd: true})
         setTimeout(()=> {this.setState({showSuccessAdd: false})}, 1500)
+
     }
 
     deleteCategoryHandler = (cat) =>{
 
-        fire.database().ref('itemPrices/').child(cat)
+        fire.database().ref(this.props.userId).child('Categorias').child(cat)
         .set(null); 
 
         this.setState({showSuccessDelete: true})
@@ -110,6 +112,8 @@ class categories extends Component {
             de la categoría serán borrados.
                 </Button> : null }</li>);
         }
+
+     
         
         
 
@@ -134,8 +138,6 @@ class categories extends Component {
                 </Aux>
             )
         }
-        
-           
         
 
         return (

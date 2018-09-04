@@ -48,7 +48,7 @@ class newItem extends Component {
 
         
 
-        axios.get('https://cotizador-92b14.firebaseio.com/Proveedores.json' + this.props.queryParams)
+        axios.get('https://cotizador-92b14.firebaseio.com/' + this.props.userId + '/Proveedores.json' + this.props.queryParams)
         .then((snapshot => {
             this.setState({suppliers: myLoop(snapshot.data)})
             console.log(snapshot)
@@ -75,46 +75,25 @@ class newItem extends Component {
 
     itemAddHandler = (event) => {
         event.preventDefault();
-        console.log(this.props.userId);
-        const updatePriceList = () => {
-            console.log(this.state.precios)
+        
+        if (this.state.suppliers && this.state.precios) { 
+            for (let i = 0; i < this.state.suppliers.length; i++){
+                let supplier = this.state.suppliers[i].replace(/ /g,'').toLowerCase()
+                let price = null;
 
-            let updatedPriceList = {};
-            if (this.state.suppliers && this.state.precios) {
-                for (let i = 0; i < this.state.suppliers.length; i++){
-                    let supplier = this.state.suppliers[i].replace(/ /g,'').toLowerCase()
-                    let price = null;
-
-                    if(this.state.precios[supplier]){
-                        price = this.state.precios[supplier]
-                    }
-                    
-                    updatedPriceList[supplier] = {[new Date().getTime()]: price} ;   
+                if(this.state.precios[supplier]){
+                    price = this.state.precios[supplier]
                 }
-                updatedPriceList["userId"] = this.props.userId
-                console.log(updatedPriceList)
-                return(updatedPriceList)
-            }
-        }
 
-        
-        if (this.state.suppliers && this.state.precios) {
-
-            fire.database().ref('Productos/').child(this.state.newItem).set({
-                category: this.props.currentClass,
-                userId: this.props.userId,
-                quotations: updatePriceList()
-            })
-
-
-            /* fire.database().ref('itemPrices/').child(this.props.currentClass)
-            .child(this.state.newItem).set(updatePriceList()).then(this.showSuccessHandler())
-            .catch(error => console.log(error));
-        } else{
-            this.setState({showWarning: true})
-        } */
-
-        
+                fire.database().ref(this.props.userId)
+                .child('Productos')
+                .child(this.state.newItem)
+                .child('quotations')
+                .child(supplier)
+                .child(new Date().getTime())
+                .set(price)
+                
+            }      
       }
     }
 
