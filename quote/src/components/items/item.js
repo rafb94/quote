@@ -26,11 +26,16 @@ class item extends Component {
     retrieveCategoriesHandler = () => {
         axios.get('https://cotizador-92b14.firebaseio.com/' + this.props.userId + '/Categorias.json' 
         + this.props.queryParams).then(response => {
-            console.log(response.data)
-            let itemClasses = Object.keys(response.data)
-            this.setState({itemClasses: itemClasses, 
-              currentItemClass: "",
-            }) 
+            if(response.data){
+                console.log(response.data)
+                let itemClasses = Object.keys(response.data)
+                this.setState({itemClasses: itemClasses, 
+                  currentItemClass: "",
+                }) 
+            }else{
+                this.setState({itemClasses: ["Añadir categorías, por favor."]})
+            }
+           
         }).catch(error => {
             this.setState({error: true})
         }
@@ -48,13 +53,6 @@ class item extends Component {
                 this.setState({items: Object.keys(response.data)})
             })
             .catch(error => console.log(error))
-            
-            /* axios.get('https://cotizador-92b14.firebaseio.com/Productos.json' + this.props.queryParams)
-            .then(response => console.log(response.data)).catch(error => {
-                console.log(error)
-                this.setState({error: true})
-            }
-            )   */
     }
     
         
@@ -94,13 +92,25 @@ class item extends Component {
         } 
 
          /* Return a list with items of the current class, option tags */
-         let items = null;
+
+         let itemDetailSection = null;
 
          if (this.state.currentClass !== null && this.state.items){
             console.log(this.state.items)
             itemDetail= this.state.items.map(num =>{  
                 return (<option key={num}> {num}</option>) 
             })
+        
+        if(this.props.currentClass){
+            itemDetailSection = (
+                <div style={this.props.dispProductList ? {display: 'none'} : null}>
+                { <Select clicked={this.props.clicked} changed={this.props.onUpdateItem} default="default">
+                     <option key="default" value="default" >  Producto</option>
+                     {itemDetail} 
+                 </Select> }
+             </div>
+            )
+        }
            
         }
 
@@ -118,12 +128,7 @@ class item extends Component {
 
             {/* Select Tag for items: */}
 
-                <div style={this.props.dispProductList ? {display: 'none'} : null}>
-                   { <Select clicked={this.props.clicked} changed={this.props.onUpdateItem} default="default">
-                        <option key="default" value="default" disabled>  Producto</option>
-                        {itemDetail} 
-                    </Select> }
-                </div>
+                {itemDetailSection}
                 <br/>
 
             </div>

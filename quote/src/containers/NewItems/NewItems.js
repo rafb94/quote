@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import Item from '../../components/items/item';
 import Aux from '../../hoc/Auxiliar';
-import Spinner from '../../UI/Spinner/Spinner';
 import {connect} from 'react-redux';
 import fire from '../../fire';
 import Label from '../../UI/Label/Label';
@@ -50,8 +49,12 @@ class newItem extends Component {
 
         axios.get('https://cotizador-92b14.firebaseio.com/' + this.props.userId + '/Proveedores.json' + this.props.queryParams)
         .then((snapshot => {
-            this.setState({suppliers: myLoop(snapshot.data)})
-            console.log(snapshot)
+            if(snapshot.data){
+                this.setState({suppliers: myLoop(snapshot.data)})
+            }else{
+                this.setState({suppliers: ["Añadir proveedores, por favor!"]})
+            }
+            
         }))
 
         /* ref.once("value").then((snapshot => {
@@ -61,7 +64,7 @@ class newItem extends Component {
 
     updateSupplierPriceListHandler = () =>{
          /* Set keys of prices using the supplier list */
-       
+        
         let updatedPriceList = {};
         if (this.state.suppliers) {
             for (let i = 0; i < this.state.suppliers.length; i++){
@@ -69,14 +72,19 @@ class newItem extends Component {
             }
             
         }
-
+        console.log(updatedPriceList)
         this.setState({precios: updatedPriceList})
     }
 
     itemAddHandler = (event) => {
         event.preventDefault();
-        
-        if (this.state.suppliers && this.state.precios) { 
+        console.log(this.state.precios)
+        if (this.state.suppliers && Object.keys(this.state.precios).length !== 0) { 
+            fire.database().ref(this.props.userId)
+                .child('Productos')
+                .child(this.state.newItem)
+                .child('category')
+                .set(this.props.currentClass)
             for (let i = 0; i < this.state.suppliers.length; i++){
                 let supplier = this.state.suppliers[i].replace(/ /g,'').toLowerCase()
                 let price = null;
@@ -92,14 +100,17 @@ class newItem extends Component {
                 .child(supplier)
                 .child(new Date().getTime())
                 .set(price)
+                .then(this.showSuccessHandler())
                 
             }      
+      }else{
+            this.showWarningHandler();
       }
     }
 
     itemPriceHandler = (event, supplier) => {
         if(!this.props.currentClass){
-            this.setState({showWarning: true})
+            this.showWarningHandler()
             document.getElementById(supplier).value = "";
             
         }else{
@@ -116,7 +127,7 @@ class newItem extends Component {
         if(this.props.currentClass){
             this.setState({newItem :  event.target.value})
         }else{
-            this.setState({showWarning: true})
+            this.showWarningHandler()
             document.getElementById("newItemInput").value = "";
         }
         
@@ -130,13 +141,22 @@ class newItem extends Component {
         }, 2000)
     }
 
+    showWarningHandler = () => {
+        this.setState({showWarning: true})
+
+        setTimeout(() =>{
+            this.setState({showWarning: false})
+        }, 2000)
+    }
+
 
     render(){
 
       /* Show warning if user is trying to add products without having selected a class */
 
       let warning = <Warning leDisp={this.state.showWarning}> 
-                        Por favor selecciona una categoría de producto o ingresa el nombre del artículo nuevo.
+                        Debes seleccionar una categoría de producto e ingresar el nombre del artículo, al igual
+                        que mínimo un precio.
                     </Warning>;
 
        /*  Retrieve all suppliers */
@@ -145,11 +165,13 @@ class newItem extends Component {
        Actualizar proveedores </Button>: <Warning leDisp="yes"> Ingresar credenciales, por favor.</Warning>;
 
        
-        if (this.state.suppliers){
+        if (this.state.suppliers && this.state.suppliers[0] !== "Añadir proveedores, por favor!"){
             console.log(this.state.suppliers)
             suppliers = this.state.suppliers
             .map(sup => <Aux key={sup}> <Label>Precio {sup}: </Label> <Input notRequired="true" leId={sup} leType="text" changed={(event) => 
                 this.itemPriceHandler(event, sup.replace(/ /g,'').toLowerCase())}/> </Aux>)
+        }else{
+            suppliers = "Añadir proveedores, por favor!"
         } 
 
         /* Retrieve list of all the items of the current class */
@@ -159,13 +181,6 @@ class newItem extends Component {
             item =  <Item clicked={this.updateSupplierPriceListHandler} leStyle={this.props.leStyle} list={this.props.itemClasses} dispProductList="Nope"/>
         }
 
-       /*  Show success button when item has been added */
-
-       let success = null;
-
-       if(this.state.showSuccess){
-           success = <ButtonSuccess leClass="yes"> Producto añadido! </ButtonSuccess>
-       }
 
         return(
         <Aux>
@@ -182,7 +197,8 @@ class newItem extends Component {
                     <Input leId="newItemInput" leType="text" changed={this.itemSetHandler}/> 
                     <Input leType="submit" leValue="Añadir item" />
                     {warning}
-                    {success}
+                    {this.state.showSuccess? 
+                    <ButtonSuccess leClass="yes"> Producto añadido! </ButtonSuccess>: null}
                     <br/><br/>                    
                 </form>
                 {suppliers} 

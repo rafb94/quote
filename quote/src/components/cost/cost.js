@@ -7,6 +7,8 @@ import Button from '../../UI/Button/Button';
 import Input from '../../UI/Input/Input';
 import fire from '../../fire';
 import classNames from 'classnames';
+import Warning from '../../UI/Warning/Warning';
+import ButtonSuccess from '../../UI/ButtonSuccess/ButtonSuccess';
 
 class cost extends Component {
 
@@ -16,33 +18,58 @@ class cost extends Component {
         currentSupplier: null,
         currentPrice: null,
         currentQuotation: null,
-        showMargin: false
+        showMargin: false,
+        showWarning: false,
+        showSuccess: false
     }
 
     addQuotationHandler = () => {
 
-        fire.database().ref(this.props.userId)
-        .child('Clientes')
-        .child(this.props.currentCustomer)
-        .child(this.props.currentItem)
-        .child(new Date().getTime())
-        .set(this.state.currentQuotation);
+        if(this.props.currentCustomer){
+            fire.database().ref(this.props.userId)
+            .child('Clientes')
+            .child(this.props.currentCustomer)
+            .child(this.props.currentItem)
+            .child(new Date().getTime())
+            .set(this.state.currentQuotation)
+            .then(this.showSuccessHandler())
+        }else{
+            this.showWarningHandler()
+        }
     }
 
     retrievePricesHandler = ()  => {
 
         this.setState({loading: true})
 
-        if(this.props.currentClass && this.props.currentItem) {
+        
 
             fire.database().ref(this.props.userId)
             .child('Productos/' + this.props.currentItem)
-            .child('quotations').once('value').then(response =>
-                this.setState({prices : response.val(), loading: false}))
-        }
+            .child('quotations').once('value').then(response =>{
+                if(response.val()){
+                    this.setState({prices : response.val(), loading: false})
+                }else{
+                    this.setState({prices : ["No se han registrado precios todavía"], loading: false})
+                }
+               
+            })    
+    }
 
-        
-        
+    showWarningHandler = () => {
+        this.setState({showWarning: true})
+
+        setTimeout(() => {
+            this.setState({showWarning: false})
+        }, 1500)
+    }
+
+    showSuccessHandler = () => {
+        this.setState({showSuccess: true})
+
+        setTimeout(() => {
+            this.setState({showSuccess: false})
+        }, 1500)
     }
 
     supplierSelectedHandler = (sup, price, date) => {
@@ -65,7 +92,7 @@ class cost extends Component {
 
        let suppliers = [];
 
-       if (this.state.prices){
+       if (this.state.prices && this.state.prices[0] != "No se han registrado precios todavía"){
            let mysuppliers = [];
            console.log(this.state.prices)
             for (let i in this.state.prices){
@@ -73,27 +100,31 @@ class cost extends Component {
                     mysuppliers.push(i)
 
                     for (let y in this.state.prices[i]){
-                        let keyEl = 0;
                         suppliers.push(
                             <tr 
                             className={
                             classNames(this.state.currentSupplier === i 
-                                && this.state.currentQuotationDate  === parseInt(y)? classes.SelectedSupplier : null,
+                                && this.state.currentQuotationDate  === parseInt(y, 10)? classes.SelectedSupplier : null,
                                 classes.Row)} 
-                            key={parseInt(y)} 
-                            onClick={() => this.supplierSelectedHandler(i, this.state.prices[i][y], parseInt(y))}> 
+                            key={parseInt(y, 10)} 
+                            onClick={() => this.supplierSelectedHandler(i, this.state.prices[i][y], parseInt(y, 10))}> 
                                 <td>{i}</td> 
                                 <td> {new Intl.DateTimeFormat('en-GB')
-                                .format(new Date(parseInt(y)))}</td>
+                                .format(new Date(parseInt(y, 10)))}</td>
                                 <td> {this.state.prices[i][y]}</td>
                             </tr>   
-                        )
-                        keyEl++;
-                        
+                        )                        
                     }
                 }
             }
             console.log(mysuppliers)
+       }else{
+           suppliers = ( 
+            <tr> 
+                <td> Añadir precios o</td> 
+                <td> Escoger categoría y</td> 
+                <td>escoger cliente</td> 
+            </tr>   )
        }
 
 
@@ -155,7 +186,12 @@ class cost extends Component {
             
             <div className={this.props.leStyle}> 
                     Cotización: <Input changed={this.analizeQuotationHandler}/> <br/>
-                    <p> Margen: {this.state.showMargin? (((this.state.currentQuotation /this.state.currentPrice) - 1) * 100).toFixed(2) : null} %</p>
+                    <p> Margen: 
+                        {this.state.showMargin? 
+                        (((this.state.currentQuotation /this.state.currentPrice) - 1) * 100).toFixed(2) : null} %
+                    </p>
+                    {this.state.showWarning? <Warning leDisp="yes"> Escoge un cliente, por favor </Warning>: null}
+                    {this.state.showSuccess? <ButtonSuccess leClass="yes"> Cotización añadida! </ButtonSuccess>: null}
                     <Button clicked={this.showMarginHandler}> Analizar </Button> 
                     <Button clicked={this.addQuotationHandler}> Añadir cotización</Button> 
             </div>

@@ -39,7 +39,13 @@ class Suppliers extends Component {
 
         axios.get('https://cotizador-92b14.firebaseio.com/' + this.props.userId + '/Proveedores.json'
          + this.props.queryParams)
-        .then(response => {this.setState({suppliers: myLoop(response.data)})})
+        .then(response => {
+            if(response.data){
+                this.setState({suppliers: myLoop(response.data)})
+            }else{
+                this.setState({suppliers: ["Añadir proveedores, por favor:"]})
+            }
+        })
         .catch(error => this.setState({error: error}))
 
        
@@ -89,15 +95,10 @@ class Suppliers extends Component {
 
         let supplier = sup.replace(/ /g,'').toLowerCase()
         fire.database().ref(this.props.userId).child('Proveedores/').child(supplier)
-        .set(null); 
+        .set(null);         
 
-        /* let supplierIndex = this.state.suppliers.indexOf(sup)
-        this.state.suppliers[supplierIndex] = null;
-        console.log(this.state.suppliers) */
-        
-
-        this.setState({showSuccess: true, suppliers: null })
-        setTimeout(()=> {this.setState({showSuccess: false})}, 2000)
+        this.setState({showSuccessDelete: true, suppliers: null })
+        setTimeout(()=> {this.setState({showSuccessDelete: false})}, 2000)
         this.retrieveSuppliersHandler();
     }
 
@@ -116,10 +117,15 @@ class Suppliers extends Component {
 
         let suppliers = this.props.token ? <Button  clicked={this.updateSupplierHandler}> Actualizar proveedores </Button>: <Warning leDisp="yes"> Ingresar credenciales, por favor.</Warning>;
         if (this.state.suppliers){
-            console.log(this.state.suppliers)
+            
             suppliers = this.state.suppliers
-            .map(sup => <li style={{display: "block"}} onClick={() => this.showWarningDeleteHandler(sup)} key={sup}> {sup} {this.state.showWarning == sup? 
-            <Button clicked={() => this.deleteSupplierHandler(sup)}> Borrar permanentemente al proveedor? </Button> : null } </li>)
+            .map(sup => 
+            <li style={{display: "block"}} onClick={() => this.showWarningDeleteHandler(sup)} key={sup}> 
+            {sup} {this.state.showWarning == sup? 
+            <Button clicked={() => this.deleteSupplierHandler(sup)}> 
+                Borrar permanentemente al proveedor? 
+            </Button> 
+            : null } </li>)
         } 
  
         return(

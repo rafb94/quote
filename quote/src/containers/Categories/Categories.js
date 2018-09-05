@@ -7,7 +7,6 @@ import {connect} from 'react-redux';
 import Warning from '../../UI/Warning/Warning';
 import ButtonSuccess from '../../UI/ButtonSuccess/ButtonSuccess';
 import * as actions from '../../store/actions/index';
-import Spinner from '../../UI/Spinner/Spinner';
 import axios from 'axios';
 
 class categories extends Component {
@@ -34,10 +33,13 @@ class categories extends Component {
        }
 
        axios.get('https://cotizador-92b14.firebaseio.com/' + this.props.userId + '/Categorias.json' + this.props.queryParams)
-        .then(snapshot => this.setState({categories: retrieveCategories(snapshot.data)}))
-
-      
-
+        .then(snapshot => {
+            if(snapshot.data) {
+                this.setState({categories: retrieveCategories(snapshot.data)})
+            }else{
+                this.setState({categories: ["Añadir categorías, por favor:"]})
+            }
+        })
     }
 
     addCategoryHandler = (event) => {
@@ -96,17 +98,14 @@ class categories extends Component {
 
     render() {
         /* Retrieve current item categories */
-        /* let categories = (
-            <Warning leDisp="yes"> 
-            Por favor regístrate o ingresa tus datos en "Log In".
-        </Warning>); */
+       
        
        let categories = this.props.token ? <Button  clicked={this.retrieveCategories }> 
        Actualizar categorías </Button>: <Warning leDisp="yes"> Ingresar credenciales, por favor.</Warning>;
         if(this.state.categories && this.props.token){
             categories = this.state.categories.map(cat => <li onClick={() => 
             this.showWarningDeleteHandler(cat)} key={cat} style={{display: "block"}}> {cat} 
-            {this.state.showWarning == cat? 
+            {this.state.showWarning === cat? 
             <Button 
             clicked={() => this.deleteCategoryHandler(cat)}> Borrar permanentemente la categoría? Cuidado: Todos los items 
             de la categoría serán borrados.

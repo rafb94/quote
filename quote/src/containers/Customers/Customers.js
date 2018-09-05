@@ -23,7 +23,8 @@ class Customers extends Component {
         showSuccessDelete: false,
         showPriceListButton: false,
         deleteOrPriceList: "priceList",
-        priceList: null
+        priceList: null,
+        loading: false
     }
 
     componentDidMount() {
@@ -56,8 +57,14 @@ class Customers extends Component {
             customers: Object.keys(response.val())})) */
 
         axios.get('https://cotizador-92b14.firebaseio.com/' + this.props.userId + '/Clientes.json' + this.props.queryParams)
-        .then(response => {this.setState({customers: Object.keys(response.data)})
-    console.log(response)})
+        .then(response => {
+            if(response.data){
+                this.setState({customers: Object.keys(response.data)})
+            }else{
+                this.setState({customers: ["Añadir clientes, por favor:"]})
+            }   
+           
+        console.log(response)})
     }
 
     addClientHandler = (event) => {
@@ -112,13 +119,14 @@ class Customers extends Component {
 
     retrievePricelistHandler = (cust) => {
 
+        this.setState({loading: true})
         fire.database().ref(this.props.userId).child('Clientes').once('value').then(response => {
             let myPriceList = response.val()[cust]
             let myPriceObject = {}
             for (let i in myPriceList){
                 myPriceObject[i] = myPriceList[i];
             }
-            this.setState({priceList: myPriceObject})
+            this.setState({priceList: myPriceObject, loading: false})
             
         })
     }
@@ -130,6 +138,7 @@ class Customers extends Component {
         let customers =  this.props.token ? <Button  clicked={this.retrieveCustomersHandler }> 
         Actualizar clientes </Button>: <Warning leDisp="yes"> Ingresar credenciales, por favor.</Warning>;
 
+
        if(this.state.customers){
            console.log(this.state.customers)
         customers = this.state.customers.map(cust => 
@@ -140,13 +149,19 @@ class Customers extends Component {
                     ? <Warning  clicked={() => this.deleteClientHandler(cust)} leDisp="yes"> 
                 Borrar Cliente {cust}? Todos los datos relacionados al cliente serán borrados! </Warning>: null}
                 {this.state.showPriceListButton === cust && this.state.deleteOrPriceList === "priceList" 
-                    ? <ButtonSuccess clicked={() => this.retrievePricelistHandler(cust)} leCustomer="yes" leClass="disp"> Mostrar lista de precios </ButtonSuccess>: null}
+                    ? <ButtonSuccess 
+                    clicked={() => this.retrievePricelistHandler(cust)} 
+                    leCustomer="yes" 
+                    leClass="disp"> 
+                        Mostrar lista de precios </ButtonSuccess>: null}
                 {this.state.showSuccessDelete === cust ? <ButtonSuccess leClass="disp">Cliente borrado! </ButtonSuccess>: null}
            </Aux>)
        } ; 
 
        /* Retrieve current customer´s price list */
        let priceList = null;
+
+       priceList = this.state.loading? <Spinner />: null;
 
        if(this.state.priceList){   
         priceList = [];
@@ -161,7 +176,7 @@ class Customers extends Component {
                             <tr className={classes.Row}  key={Math.random()}>
                                 <td>{item} <span className={classes.Hide}> .</span></td>
                                 <td> {new Intl.DateTimeFormat('en-GB')
-                                .format(new Date(parseInt(date)))}<span className={classes.Hide}> .</span></td> 
+                                .format(new Date(parseInt(date, 10)))}<span className={classes.Hide}> .</span></td> 
                                 <td>{this.state.priceList[item][date]}<span className={classes.Hide}> .</span></td>
                             </tr>
                         )}

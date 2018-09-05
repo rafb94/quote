@@ -3,8 +3,6 @@ import Item from '../../components/items/item';
 import Cost from '../../components/cost/cost';
 import axios from 'axios';
 import Aux from '../../hoc/Auxiliar';
-import fire from '../../fire';
-import Spinner from '../../UI/Spinner/Spinner';
 import {connect} from 'react-redux';
 import Button from '../../UI/Button/Button';
 import Warning from '../../UI/Warning/Warning';
@@ -32,8 +30,15 @@ class cotizador extends Component {
 
         axios.get("https://cotizador-92b14.firebaseio.com/" + this.props.userId 
         + "/Clientes.json" + this.props.queryParams)
-        .then(response => this.setState({
-            customers: Object.keys(response.data)})) 
+        .then(response => {
+            if(response.data){
+                this.setState({
+                customers: Object.keys(response.data)}) 
+            }else{
+                this.setState({customers: ["Añadir clientes, por favor"]})
+            }
+           
+        }) 
 
         /* fire.database().ref('Clientes').once('value').then(response => this.setState({
             customers: Object.keys(response.val())})) */
