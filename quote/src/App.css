@@ -34,4 +34,31 @@
     text-align: center;
     display: block;
     padding: 2rem;
+    
+}
+
+.Element h1{
+  color: #01015B;
+  text-decoration: underline;
+}
+
+@media only screen and (max-width: 600px){
+  .Element{
+    width: 72%;
+    padding: 1rem; 
+  }
+  .Element Input{
+    width: 80%;
+  }
+
+  .Element Select{
+    width: 90%;
+  }
+
+  .Element h1{
+    font-size: 1.5rem;
+    color: #01015B;
+    text-decoration: underline;
+  }
+  
 }

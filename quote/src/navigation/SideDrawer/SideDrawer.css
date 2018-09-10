@@ -1,6 +1,6 @@
 .SideDrawer{
     height: 100%;
-    width: 45%;
+    width: 30%;
     background-color: #F2F3F5;
     position: fixed;
     z-index: 1000;
@@ -29,12 +29,22 @@
 
     width: 60%;
     text-decoration: none;
-    height: 2rem;
+    padding: 2px;
     border-bottom: 5px solid #016AFB;
     display: inline-block;
     margin: 0.25rem;
     text-align: center;
     color: #01015B;
     font-weight: bold;
+}
+
+@media only screen and (max-width: 600px){
+    .Link{
+        border: 1px solid  #016AFB;
+    }
+
+    .SideDrawer{
+        width: 45%;
+    }
 }
 

@@ -11,7 +11,7 @@
 
 .MenuLogo{
     height: 90%;
-    padding: 0.5rem;
+    padding: 5%;
     display: none;
     left: 0;
 }
@@ -20,7 +20,6 @@
     height: 100%;
     text-align: center;
     display: inline-block;
-    margin: 0 5rem 1rem 2rem;
     overflow-y: auto;
 }
 
@@ -55,4 +54,15 @@
   .MenuButton:active {
     box-shadow: 0 1.5px #666;
     transform: translateY(0.25px);
+  }
+
+  @media only screen and (max-width: 600px){
+      .MenuButton{
+          height: 35%;
+          font-size: 14px;
+      }
+
+      .Title{
+          font-size: 140%;
+      }
   }

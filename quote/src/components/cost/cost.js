@@ -117,7 +117,6 @@ class cost extends Component {
                     }
                 }
             }
-            console.log(mysuppliers)
        }else{
            suppliers = ( 
             <tr> 
@@ -153,19 +152,21 @@ class cost extends Component {
                 <Aux>
                     <h2> Lista de Cotizaciones </h2>
                     <h3> Cliente: {this.state.showPriceListButton} </h3>
-                    <table className={classes.CenterElement}>
-                        <thead> 
-                            <tr className={classes.Row}>
-                                <th> Proveedor <span className={classes.Hide}> .</span></th>
-                                <th>Fecha <span className={classes.Hide}> .</span></th>
-                                <th> Cotización <span className={classes.Hide}> .</span></th>
-                            </tr>
-                        </thead>
-        
-                        <tbody>
-                            {suppliers} 
-                        </tbody>
-                    </table>
+                    <div className={classes.tableContainer}>
+                        <table className={classes.CenterElement}>
+                            <thead> 
+                                <tr className={classes.Row}>
+                                    <th> Proveedor <span className={classes.Hide}> .</span></th>
+                                    <th>Fecha <span className={classes.Hide}> .</span></th>
+                                    <th> Cotización <span className={classes.Hide}> .</span></th>
+                                </tr>
+                            </thead>
+            
+                            <tbody>
+                                {suppliers} 
+                            </tbody>
+                        </table>
+                    </div>
                 </Aux>
             )
         }

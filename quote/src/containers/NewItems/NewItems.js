@@ -18,7 +18,8 @@ class newItem extends Component {
         newItem: null,
         showWarning: false,
         showSuccess: false,
-        newPriceState: null
+        newPriceState: null,
+        hideItemList: false,
     }
 
     componentWillMount () {
@@ -32,6 +33,15 @@ class newItem extends Component {
         
     }
 
+    hideItemListHandler = () => {
+        this.setState({hideItemList: true})
+       
+    }
+
+    showItemListHandler = () => {
+        this.setState({hideItemList: false})
+        console.log(this.props.currentItem)
+    }
 
     retrieveSuppliersHandler = () => {
     
@@ -72,17 +82,17 @@ class newItem extends Component {
             }
             
         }
-        console.log(updatedPriceList)
         this.setState({precios: updatedPriceList})
     }
 
     itemAddHandler = (event) => {
         event.preventDefault();
-        console.log(this.state.precios)
         if (this.state.suppliers && Object.keys(this.state.precios).length !== 0) { 
             fire.database().ref(this.props.userId)
                 .child('Productos')
-                .child(this.state.newItem)
+                .child(
+                    this.state.hideItemList? this.state.newItem: this.props.currentItem
+                )
                 .child('category')
                 .set(this.props.currentClass)
             for (let i = 0; i < this.state.suppliers.length; i++){
@@ -95,14 +105,15 @@ class newItem extends Component {
 
                 fire.database().ref(this.props.userId)
                 .child('Productos')
-                .child(this.state.newItem)
+                .child(
+                    this.state.hideItemList? this.state.newItem: this.props.currentItem
+                )
                 .child('quotations')
                 .child(supplier)
                 .child(new Date().getTime())
                 .set(price)
-                .then(this.showSuccessHandler())
-                
-            }      
+                .then(this.showSuccessHandler())  
+            }
       }else{
             this.showWarningHandler();
       }
@@ -133,8 +144,14 @@ class newItem extends Component {
         
     }
 
+   /*  clearInputsHandler = () => {
+            for (let i in document.getElementsByClassName('input')){
+                document.getElementsByClassName('input')[i].value = "";
+            }
+    } */
+
     showSuccessHandler = () => {
-        this.setState({showSuccess: true})
+        this.setState({showSuccess: true})       
 
         setTimeout(() =>{
             this.setState({showSuccess: false})
@@ -166,7 +183,6 @@ class newItem extends Component {
 
        
         if (this.state.suppliers && this.state.suppliers[0] !== "Añadir proveedores, por favor!"){
-            console.log(this.state.suppliers)
             suppliers = this.state.suppliers
             .map(sup => <Aux key={sup}> <Label>Precio {sup}: </Label> <Input notRequired="true" leId={sup} leType="text" changed={(event) => 
                 this.itemPriceHandler(event, sup.replace(/ /g,'').toLowerCase())}/> </Aux>)
@@ -178,7 +194,7 @@ class newItem extends Component {
         let item = null;
 
         if (this.props.itemList !== null) {
-            item =  <Item clicked={this.updateSupplierPriceListHandler} leStyle={this.props.leStyle} list={this.props.itemClasses} dispProductList="Nope"/>
+            item =  <Item clicked={this.updateSupplierPriceListHandler} leStyle={this.props.leStyle} list={this.props.itemClasses} dispProductList={this.state.hideItemList? true: false}/>
         }
 
 
@@ -186,16 +202,20 @@ class newItem extends Component {
         <Aux>
             <div className={this.props.leStyle}>
                 <h1>Sección Productos </h1>
-                <h4>Añadir información y hacer click sobre el botón para insertar producto en la base de datos </h4>
+                <h4>Añadir información y hacer click sobre el botón para insertar producto en la base de datos</h4>
+                <ButtonSuccess leClass="disp" clicked={this.showItemListHandler}> Actualizar productos </ButtonSuccess>
+                <Button clicked={this.hideItemListHandler}> Añadir producto nuevo </Button>
+                <h5 style={{color: "#155724", textDecoration: "underline"}}> {this.state.hideItemList? "Añadiendo items": "Actualizando items"} </h5>
             </div>
-           {item}
+            
+            {item}
 
             {/* Add new items to the database with corresponding prices (only shown when in "Productos") */}
             <div className={this.props.leStyle}>
                 <form onSubmit={this.itemAddHandler}>
                    {/*  <input type="text" onChange={this.itemSetHandler}/>  */}
-                    <Input leId="newItemInput" leType="text" changed={this.itemSetHandler}/> 
-                    <Input leType="submit" leValue="Añadir item" />
+                    {this.state.hideItemList? <Input leId="newItemInput" leType="text" changed={this.itemSetHandler}/> : null}
+                    <Input leType="submit" leValue={this.state.hideItemList?"Añadir item":"Actualizar item"} />
                     {warning}
                     {this.state.showSuccess? 
                     <ButtonSuccess leClass="yes"> Producto añadido! </ButtonSuccess>: null}
@@ -211,6 +231,7 @@ class newItem extends Component {
 const mapStateToProps = state => {
     return{
         currentClass: state.currentClass,
+        currentItem: state.currentItem,
         userId: state.userId,
         token: state.token,
         queryParams: state.queryParams

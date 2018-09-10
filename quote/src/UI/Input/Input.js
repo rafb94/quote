@@ -1,5 +1,6 @@
 import React from 'react';
 import classes from './Input.css';
+import classNames from 'classnames';
 
 
 const input = (props) => {
@@ -7,7 +8,7 @@ const input = (props) => {
         
         required={props.notRequired? false: true}
         onChange={props.changed}  
-        className={props.leType === "text"?classes.Input: classes.Button} 
+        className={classNames(props.leType === "text"?classes.Input: classes.Button, "input")} 
         name={props.leName} 
         value={props.leValue} 
         ref={props.leRef}

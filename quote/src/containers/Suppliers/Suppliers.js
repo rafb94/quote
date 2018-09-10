@@ -7,6 +7,7 @@ import Button from '../../UI/Button/Button';
 import ButtonSuccess from '../../UI/ButtonSuccess/ButtonSuccess';
 import Input from '../../UI/Input/Input';
 import Warning from '../../UI/Warning/Warning';
+import Aux from '../../hoc/Auxiliar';
 
 
 class Suppliers extends Component {
@@ -129,21 +130,26 @@ class Suppliers extends Component {
         } 
  
         return(
-            <div className={this.props.leStyle}>
-                <h1>Sección Proveedores </h1>
+            <Aux>
+                <div className={this.props.leStyle}>
+                    <h1>Sección Proveedores </h1>
+                    
+                    <h4>Hacer click sobre proveedor que deseas eliminar </h4>
+                </div>
+
+                <div className={this.props.leStyle}>
+                    <ul style={{textAlign: "center", padding: 0}}> {suppliers} </ul>
+                    <form onSubmit={this.setSupplierHandler}>
+                        <Input leId="newSupplier" leName="newSupplier" leRef={(element) => { this.input = element }}/>
+                        <Input leType="submit" leValue="Añadir Proveedor Nuevo" /> 
+                        {this.state.showAddSupplierButton? <Button className={classes.Button} clicked={this.addSupplierHandler}> 
+                        Segur@? </Button> : null }
+                        <ButtonSuccess leClass={this.state.showSuccessDelete} > Proveedor borrado! </ButtonSuccess>
+                        <ButtonSuccess leClass={this.state.showSuccessAdd} > Proveedor añadido! </ButtonSuccess> 
+                    </form>
+                </div>
                 
-                <h4>Hacer click sobre proveedor que deseas eliminar </h4>
-                <ul style={{textAlign: "center", padding: 0}}> {suppliers} </ul>
-                <form onSubmit={this.setSupplierHandler}>
-                    <Input leId="newSupplier" leName="newSupplier" leRef={(element) => { this.input = element }}/>
-                    <Input leType="submit" leValue="Añadir Proveedor Nuevo" /> 
-                    {this.state.showAddSupplierButton? <Button className={classes.Button} clicked={this.addSupplierHandler}> 
-                    Segur@? </Button> : null }
-                    <ButtonSuccess leClass={this.state.showSuccessDelete} > Proveedor borrado! </ButtonSuccess>
-                    <ButtonSuccess leClass={this.state.showSuccessAdd} > Proveedor añadido! </ButtonSuccess> 
-                </form>
-                
-            </div>
+            </Aux>
         )
     }
 }

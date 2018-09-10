@@ -96,7 +96,6 @@ class item extends Component {
          let itemDetailSection = null;
 
          if (this.state.currentClass !== null && this.state.items){
-            console.log(this.state.items)
             itemDetail= this.state.items.map(num =>{  
                 return (<option key={num}> {num}</option>) 
             })

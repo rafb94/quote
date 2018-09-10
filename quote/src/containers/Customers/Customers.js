@@ -205,19 +205,21 @@ class Customers extends Component {
                  <div className={priceList? classNames(this.props.leStyle): classes.NoDisplay}>
                     <h2> Lista de Precios </h2>
                     <h3> Cliente: {this.state.showPriceListButton} </h3>
-                    <table className={classes.CenterElement}>
-                        <thead> 
-                            <tr className={classes.Row}>
-                                <th> Item <span className={classes.Hide}> .</span></th>
-                                <th>Fecha <span className={classes.Hide}> .</span></th>
-                                <th> Cotización <span className={classes.Hide}> .</span></th>
-                            </tr>
-                        </thead>
+                    <div className={classes.tableContainer}>
+                        <table className={classes.CenterElement}>
+                            <thead> 
+                                <tr className={classes.Row}>
+                                    <th> Item <span className={classes.Hide}> .</span></th>
+                                    <th>Fecha <span className={classes.Hide}> .</span></th>
+                                    <th> Cotización <span className={classes.Hide}> .</span></th>
+                                </tr>
+                            </thead>
 
-                        <tbody>
-                            {priceList}
-                        </tbody>
-                    </table>
+                            <tbody>
+                                {priceList}
+                            </tbody>
+                        </table>
+                    </div>
                     
                 </div>
 

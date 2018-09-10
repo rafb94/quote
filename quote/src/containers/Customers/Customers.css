@@ -14,3 +14,7 @@
 .Row{
     border-bottom: 1px solid #4093EC !important;
 }
+
+.tableContainer{
+    overflow-x:auto;
+}
